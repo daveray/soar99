@@ -1,0 +1,109 @@
+# Reverse a list
+source "common.soar"
+
+sp {propose*init
+  (state <s> ^superstate nil
+            -^name)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name init)
+}
+
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name p05 ^input (list this is a list))
+}
+
+sp {succeeded
+  (state <s> ^name p05 ^result <r>)
+  (<r> ^value list ^next <n1>)
+  (<n1> ^value a ^next <n2>)
+  (<n2> ^value is ^next <n3>)
+  (<n3> ^value this -^next)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+
+sp {propose*reverse
+  (state <s> ^name p05
+             ^input <input>
+            -^result)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name reverse ^head <input>)
+}
+
+sp {reverse*propose*init
+  (state <s> ^name reverse -^current)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name reverse-init)
+}
+
+sp {reverse*apply*init
+  (state <s> ^name reverse
+             ^operator.name reverse-init
+             ^head <head>)
+-->
+  (<s> ^current <head>)
+}
+
+sp {reverse*propose*process
+  (state <s> ^name reverse 
+             ^current.next)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name reverse-process)
+}
+
+sp {reverse*apply*process*first
+  (state <s> ^name reverse
+             ^operator.name reverse-process
+             ^current <current>
+             -^new-head)
+  (<current> ^next <next> ^value <value>)
+-->
+  (<s> ^current <current> -
+       ^current <next>
+       ^new-head.value <value>)
+}
+
+sp {reverse*apply*process
+  (state <s> ^name reverse
+             ^operator.name reverse-process
+             ^current <current>
+             ^new-head <nh>)
+  (<current> ^next <next> ^value <value>)
+-->
+  (<s> ^current <current> -
+       ^current <next>
+       ^new-head <nh> -
+       ^new-head <nh2>)
+  (<nh2> ^next <nh> ^value <value>)
+}
+
+sp {reverse*propose*return
+  (state <s> ^name reverse 
+             ^current <current>)
+  (<current> -^next)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name reverse-return)
+}
+
+sp {reverse*apply*return
+  (state <s> ^name reverse
+             ^superstate <ss>
+             ^operator.name reverse-return
+             ^current <current>
+             ^new-head <nh>)
+  (<current> ^value <value>)
+-->
+  (<s> ^current <current> -
+       ^new-head <nh> -)
+  (<ss> ^result <nh2>)
+  (<nh2> ^next <nh> ^value <value>)
+}
+          
