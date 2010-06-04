@@ -1,0 +1,86 @@
+# Find the last element of a list
+source "common.soar"
+
+sp {propose*init
+  (state <s> ^superstate nil
+            -^name)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name init)
+}
+
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name p01 ^input (list this is a list of many values))
+}
+
+sp {succeeded
+  (state <s> ^name p01 ^result values)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+
+sp {propose*find-last
+  (state <s> ^name p01
+             ^input <input>
+            -^result)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name find-last ^head <input>)
+}
+
+sp {find-last*propose*init
+  (state <s> ^name find-last -^current)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name find-last-init)
+}
+
+sp {find-last*apply*init
+  (state <s> ^name find-last
+             ^operator.name find-last-init
+             ^head <head>)
+-->
+  (<s> ^current <head>)
+}
+
+sp {find-last*propose*skip
+  (state <s> ^name find-last 
+             ^current.next)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name find-last-skip)
+}
+
+sp {find-last*apply*skip
+  (state <s> ^name find-last
+             ^operator.name find-last-skip
+             ^current <current>)
+  (<current> ^next <next>)
+-->
+  (<s> ^current <current> -
+       ^current <next>)
+}
+
+sp {find-last*propose*return
+  (state <s> ^name find-last 
+             ^current <current>)
+  (<current> -^next)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name find-last-return)
+}
+
+sp {find-last*apply*return
+  (state <s> ^name find-last ^superstate <ss>
+             ^operator.name find-last-return
+             ^current <current>)
+  (<current> ^value <value>)
+-->
+  (<s> ^current <current> -)
+  (<ss> ^result <value>)
+}
+
+          

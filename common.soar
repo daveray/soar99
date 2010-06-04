@@ -1,0 +1,6 @@
+
+sp {elaborate*operator*attributes
+  (state <s> ^superstate.operator.<name> <value>)
+-->
+  (<s> ^<name> <value>)
+}

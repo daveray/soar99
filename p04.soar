@@ -1,0 +1,89 @@
+# Find the number of elements in a list
+source "common.soar"
+
+sp {propose*init
+  (state <s> ^superstate nil
+            -^name)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name init)
+}
+
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name p04 ^input (list this is big a list of eight values))
+}
+
+sp {succeeded
+  (state <s> ^name p04 ^result 8)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+
+sp {propose*count
+  (state <s> ^name p04
+             ^input <input>
+            -^result)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name count ^head <input>)
+}
+
+sp {count*propose*init
+  (state <s> ^name count -^current)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name count-init)
+}
+
+sp {count*apply*init
+  (state <s> ^name count
+             ^operator.name count-init
+             ^head <head>)
+-->
+  (<s> ^current <head> ^count 1)
+}
+
+sp {count*propose*skip
+  (state <s> ^name count 
+             ^current.next)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name count-skip)
+}
+
+sp {count*apply*skip
+  (state <s> ^name count
+             ^operator.name count-skip
+             ^current <current>
+             ^count <count>)
+  (<current> ^next <next>)
+-->
+  (<s> ^current <current> -
+       ^current <next>
+       ^count <count> -
+       ^count (+ <count> 1))
+}
+
+sp {count*propose*return
+  (state <s> ^name count 
+             ^current <current>)
+  (<current> -^next)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name count-return)
+}
+
+sp {count*apply*return
+  (state <s> ^name count ^superstate <ss>
+             ^operator.name count-return
+             ^current <current>
+             ^count <count>)
+-->
+  (<s> ^current <current> -)
+  (<ss> ^result <count>)
+}
+
+          
