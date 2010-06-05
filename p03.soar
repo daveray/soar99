@@ -1,92 +1,35 @@
 # Find the kth element of a list
 source "common.soar"
 
-sp {propose*init
-  (state <s> ^superstate nil
-            -^name)
--->
-  (<s> ^operator <o> + =)
-  (<o> ^name init)
-}
-
 sp {apply*init
   (state <s> ^operator.name init)
 -->
-  (<s> ^name p03 ^input <input>)
-  (<input> ^head (list this is a list of many values) ^k 4)
+  (<s> ^name p03 
+       ^input <input>
+       ^expected-result of)
+  (<input> ^head (list this is a list of many values) 
+           ^index 4)
 }
 
 sp {succeeded
-  (state <s> ^name p03 ^result of)
+  (state <s> ^name p03 
+             ^expected-result <expected>
+             ^result <expected>)
 -->
   (write (crlf) |Succeeded|)
   (halt)
 }
 
-sp {propose*find-kth
+sp {propose*list*get
   (state <s> ^name p03
              ^input <input>
             -^result)
+  (<input> ^head <head>
+           ^index <index>)
 -->
-  (<s> ^operator <o> + =)
-  (<o> ^name find-kth ^input <input>)
+  (<s> ^operator <o>)
+  (<o> ^name list*get 
+       ^head <head>
+       ^index <index>)
 }
 
-sp {find-kth*propose*init
-  (state <s> ^name find-kth -^current)
--->
-  (<s> ^operator <o> + =)
-  (<o> ^name find-kth-init)
-}
-
-sp {find-kth*apply*init
-  (state <s> ^name find-kth
-             ^operator.name find-kth-init
-             ^input.head <head>)
--->
-  (<s> ^current <head> ^index 0)
-}
-
-sp {find-kth*propose*skip
-  (state <s> ^name find-kth 
-             ^input.k <k>
-             ^index < <k>)
--->
-  (<s> ^operator <o> + =)
-  (<o> ^name find-kth-skip)
-}
-
-sp {find-kth*apply*skip
-  (state <s> ^name find-kth
-             ^operator.name find-kth-skip
-             ^index <index>
-             ^current <current>)
-  (<current> ^next <next>)
--->
-  (<s> ^current <current> -
-       ^current <next>
-       ^index <index> -
-       ^index (+ <index> 1))
-}
-
-sp {find-kth*propose*return
-  (state <s> ^name find-kth 
-             ^input.k <k>
-             ^index <k>
-             ^current <current>)
--->
-  (<s> ^operator <o> + =)
-  (<o> ^name find-kth-return)
-}
-
-sp {find-kth*apply*return
-  (state <s> ^name find-kth ^superstate <ss>
-             ^operator.name find-kth-return
-             ^current <current>)
-  (<current> ^value <value>)
--->
-  (<s> ^current <current> -)
-  (<ss> ^result <value>)
-}
-
-          

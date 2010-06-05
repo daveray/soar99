@@ -4,3 +4,13 @@ sp {elaborate*operator*attributes
 -->
   (<s> ^<name> <value>)
 }
+
+source "list.soar"
+
+sp {propose*init
+  (state <s> ^superstate nil
+            -^name)
+-->
+  (<s> ^operator.name init)
+}
+
