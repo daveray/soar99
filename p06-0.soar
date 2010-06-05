@@ -1,0 +1,10 @@
+source "p06.soar"
+# success case
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name p06
+       ^input (list this is a palindrome a is this)
+       ^expected-result true)
+}
+
