@@ -1,0 +1,35 @@
+# Compare two empty lists
+source "common.soar"
+
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name compare-equal-lists 
+       ^a nil
+       ^b nil
+       ^expected-result true)
+}
+
+sp {succeeded
+  (state <s> ^name compare-equal-lists 
+             ^expected-result <expected>
+             ^test-result <expected>)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+
+sp {propose*list*compare
+  (state <s> ^name compare-equal-lists
+             ^a <a>
+             ^b <b>
+            -^test-result)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*compare 
+       ^a <a>
+       ^b <b>
+       ^return-to test-result)
+}
+
+          

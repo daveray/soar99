@@ -10,10 +10,10 @@ sp {apply*init
 
 sp {succeeded
   (state <s> ^name p05 ^result <r>)
-  (<r>  ^value list   ^next <n1>)
-  (<n1> ^value a     ^next <n2>)
-  (<n2> ^value is    ^next <n3>)
-  (<n3> ^value this -^next)
+  (<r>  ^value list ^next <n1>)
+  (<n1> ^value a    ^next <n2>)
+  (<n2> ^value is   ^next <n3>)
+  (<n3> ^value this ^next nil)
 -->
   (write (crlf) |Succeeded|)
   (halt)

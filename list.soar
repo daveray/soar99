@@ -30,40 +30,36 @@ sp {list*last*apply*init
              ^operator.name list*last-init
              ^head <head>)
 -->
-  (<s> ^current <head>)
+  (<s> ^current <head>
+       ^previous nil)
 }
 
-sp {list*last*propose*skip
+sp {list*last*propose*process
   (state <s> ^name list*last 
-             ^current.next)
+             ^current)
 -->
-  (<s> ^operator.name list*last-skip)
+  (<s> ^operator.name list*last-process)
 }
 
-sp {list*last*apply*skip
+sp {list*last*apply*process-continue
   (state <s> ^name list*last
-             ^operator.name list*last-skip
-             ^current <current>)
+             ^operator.name list*last-process
+             ^current <current>
+             ^previous <previous>)
   (<current> ^next <next>)
 -->
   (<s> ^current <current> - <next>)
+  (<s> ^previous <previous> - <current>)
 }
 
-sp {list*last*propose*return
-  (state <s> ^name list*last 
-             ^current <current>)
-  (<current> -^next)
--->
-  (<s> ^operator.name list*last-return)
-}
-
-sp {list*last*apply*return
+sp {list*last*apply*process-return
   (state <s> ^name list*last 
              ^superstate <ss>
              ^return-to <return-to>
-             ^operator.name list*last-return
-             ^current <current>)
-  (<current> ^value <value>)
+             ^operator.name list*last-process
+             ^current nil
+             ^previous <previous>)
+  (<previous> ^value <value>)
 -->
   (<ss> ^<return-to> <value>)
 }
@@ -93,18 +89,18 @@ sp {list*get*apply*init
   (<s> ^current <head> ^i 0)
 }
 
-sp {list*get*propose*skip
+sp {list*get*propose*process
   (state <s> ^name list*get 
-             ^index <index>
-             ^i < <index>)
+             ^current)
 -->
-  (<s> ^operator.name list*get-skip)
+  (<s> ^operator.name list*get-process)
 }
 
-sp {list*get*apply*skip
+sp {list*get*apply*process
   (state <s> ^name list*get
-             ^operator.name list*get-skip
-             ^i <i>
+             ^operator.name list*get-process
+             ^index <index>
+             ^i { <i> <> <index> }
              ^current <current>)
   (<current> ^next <next>)
 -->
@@ -112,19 +108,12 @@ sp {list*get*apply*skip
        ^i <i> - (+ <i> 1))
 }
 
-sp {list*get*propose*return
+sp {list*get*apply*process-return
   (state <s> ^name list*get 
+             ^operator.name list*get-process
              ^index <index>
              ^i <index>
-             ^current <current>)
--->
-  (<s> ^operator.name list*get-return)
-}
-
-sp {list*get*apply*return
-  (state <s> ^name list*get 
              ^superstate <ss>
-             ^operator.name list*get-return
              ^return-to <return-to>
              ^current <current>)
   (<current> ^value <value>)
@@ -137,7 +126,7 @@ sp {list*get*apply*return
 #
 # ^operator
 #   ^name list*last
-#   ^head <head-of-list>
+#   ^head <head-of-list> (nil for empty list)
 #   ^return-to <name-of-result-attribute>
 
 sp {list*size*propose*init
@@ -153,29 +142,19 @@ sp {list*size*apply*init
              ^head <head>)
 -->
   (<s> ^current <head> 
-       ^count 1)
+       ^count 0)
 }
 
-sp {list*size*apply*init*return-empty
+sp {list*size*propose*process
   (state <s> ^name list*size 
-             ^operator.name list*size-init
-             ^superstate <ss>
-             ^return-to <return-to>
-            -^head)
+             ^current)
 -->
-  (<ss> ^<return-to> 0)
+  (<s> ^operator.name list*size-process)
 }
 
-sp {list*size*propose*skip
-  (state <s> ^name list*size 
-             ^current.next)
--->
-  (<s> ^operator.name list*size-skip)
-}
-
-sp {list*size*apply*skip
+sp {list*size*apply*process
   (state <s> ^name list*size
-             ^operator.name list*size-skip
+             ^operator.name list*size-process
              ^current <current>
              ^count <count>)
   (<current> ^next <next>)
@@ -184,20 +163,12 @@ sp {list*size*apply*skip
        ^count <count> - (+ <count> 1))
 }
 
-sp {list*size*propose*return
+sp {list*size*apply*process-return
   (state <s> ^name list*size 
-             ^current <current>)
-  (<current> -^next)
--->
-  (<s> ^operator.name list*size-return)
-}
-
-sp {list*size*apply*return
-  (state <s> ^name list*size 
-             ^operator.name list*size-return
+             ^operator.name list*size-process
              ^superstate <ss>
              ^return-to <return-to>
-             ^current <current>
+             ^current nil
              ^count <count>)
 -->
   (<ss> ^<return-to> <count>)
@@ -223,26 +194,15 @@ sp {list*reverse*apply*init
              ^operator.name list*reverse-init
              ^head <head>)
 -->
-  (<s> ^current <head>)
+  (<s> ^current <head>
+       ^new-head nil)
 }
 
 sp {list*reverse*propose*process
   (state <s> ^name list*reverse 
-             ^current.next)
+             ^current)
 -->
   (<s> ^operator.name list*reverse-process)
-}
-
-sp {list*reverse*apply*process*first
-  (state <s> ^name list*reverse
-             ^operator.name list*reverse-process
-             ^current <current>
-             -^new-head)
-  (<current> ^next <next> 
-             ^value <value>)
--->
-  (<s> ^current <current> - <next>
-       ^new-head.value <value>)
 }
 
 sp {list*reverse*apply*process
@@ -258,25 +218,15 @@ sp {list*reverse*apply*process
   (<nh2> ^next <nh> ^value <value>)
 }
 
-sp {list*reverse*propose*return
-  (state <s> ^name list*reverse 
-             ^current <current>)
-  (<current> -^next)
--->
-  (<s> ^operator.name list*reverse-return)
-}
-
-sp {list*reverse*apply*return
+sp {list*reverse*apply*process-return
   (state <s> ^name list*reverse
-             ^operator.name list*reverse-return
+             ^operator.name list*reverse-process
              ^superstate <ss>
              ^return-to <return-to>
-             ^current <current>
+             ^current nil
              ^new-head <nh>)
-  (<current> ^value <value>)
 -->
-  (<ss> ^<return-to> <nh2>)
-  (<nh2> ^next <nh> ^value <value>)
+  (<ss> ^<return-to> <nh>)
 }
           
 ##########################################################################
@@ -314,43 +264,41 @@ sp {list*compare*propose*values*return-false
   (<ca> ^value <va>)
   (<cb> ^value <> <va>)
 -->
-  (<s> ^operator.name list*compare-return-false)
+  (<s> ^operator <o>)
+  (<o> ^name list*compare-return ^result false)
 }
+
 sp {list*compare*propose*end-of-b*return-false
   (state <s> ^name list*compare 
-             ^ca <ca>
-             ^cb <cb>)
-  (<ca> ^next)
-  (<cb> -^next)
+             ^ca.next
+             ^cb nil)
 -->
-  (<s> ^operator.name list*compare-return-false)
+  (<s> ^operator <o>)
+  (<o> ^name list*compare-return ^result false)
 }
+
 sp {list*compare*propose*end-of-a*return-false
   (state <s> ^name list*compare 
-             ^ca <ca>
-             ^cb <cb>)
-  (<ca> -^next)
-  (<cb> ^next)
+             ^ca nil
+             ^cb.next)
 -->
-  (<s> ^operator.name list*compare-return-false)
+  (<s> ^operator <o>)
+  (<o> ^name list*compare-return ^result false)
 }
 
 sp {list*compare*propose*return-true
   (state <s> ^name list*compare 
-             ^ca <ca>
-             ^cb <cb>)
-  (<ca> -^next ^value <value>)
-  (<cb> -^next ^value <value>)
+             ^ca nil
+             ^cb nil)
 -->
-  (<s> ^operator.name list*compare-return-true)
+  (<s> ^operator <o>)
+  (<o> ^name list*compare-return ^result true)
 }
 
 sp {list*compare*propose*continue
   (state <s> ^name list*compare 
-             ^ca <ca>
-             ^cb <cb>)
-  (<ca> ^next ^value <value>)
-  (<cb> ^next ^value <value>)
+             ^ca.value <value>
+             ^cb.value <value>)
 -->
   (<s> ^operator.name list*compare-continue)
 }
@@ -367,21 +315,14 @@ sp {list*compare*apply*continue
        ^cb <cb> - <bn>)
 }
 
-sp {list*compare*apply*return-true
+sp {list*compare*apply*return
   (state <s> ^name list*compare 
              ^superstate <ss>
              ^return-to <return-to>
-             ^operator.name list*compare-return-true)
+             ^operator <o>)
+  (<o> ^name list*compare-return 
+       ^result <result>)
 -->
-  (<ss> ^<return-to> true)
-}
-
-sp {list*compare*apply*return-false
-  (state <s> ^name list*compare 
-             ^superstate <ss>
-             ^return-to <return-to>
-             ^operator.name list*compare-return-false)
--->
-  (<ss> ^<return-to> false)
+  (<ss> ^<return-to> <result>)
 }
 
