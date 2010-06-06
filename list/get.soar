@@ -1,0 +1,55 @@
+##########################################################################
+# Operator list*get - get the kth value of a list
+#
+# ^operator
+#   ^name list*last
+#   ^head <head-of-list>
+#   ^index desired index
+#   ^return-to <name-of-result-attribute>
+
+sp {list*get*propose*init
+  (state <s> ^name list*get 
+             -^current)
+-->
+  (<s> ^operator.name list*get-init)
+}
+
+sp {list*get*apply*init
+  (state <s> ^name list*get
+             ^operator.name list*get-init
+             ^head <head>)
+-->
+  (<s> ^current <head> ^i 0)
+}
+
+sp {list*get*propose*process
+  (state <s> ^name list*get 
+             ^current)
+-->
+  (<s> ^operator.name list*get-process)
+}
+
+sp {list*get*apply*process
+  (state <s> ^name list*get
+             ^operator.name list*get-process
+             ^index <index>
+             ^i { <i> <> <index> }
+             ^current <current>)
+  (<current> ^next <next>)
+-->
+  (<s> ^current <current> - <next>
+       ^i <i> - (+ <i> 1))
+}
+
+sp {list*get*apply*process-return
+  (state <s> ^name list*get 
+             ^operator.name list*get-process
+             ^index <index>
+             ^i <index>
+             ^superstate <ss>
+             ^return-to <return-to>
+             ^current <current>)
+  (<current> ^value <value>)
+-->
+  (<ss> ^<return-to> <value>)
+}

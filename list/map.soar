@@ -1,0 +1,135 @@
+##!
+# Apply an operator to each value in a list constructing a new list
+# from the results
+#
+# ^operator
+#   ^name list*map
+#   ^head <head-of-list>
+#   ^func <name-of-operator-to-apply>
+#   ^return-to <result-attribute>
+
+sp {list*map*propose*init
+  (state <s> ^name list*map
+            -^current)
+-->
+  (<s> ^operator.name list*map-init)
+}
+
+sp {list*map*apply*init
+  (state <s> ^name list*map
+             ^operator.name list*map-init
+             ^head <head>)
+-->
+  (<s> ^current <head>
+       ^result-head nil)
+}
+
+sp {list*map*propose*func
+  "If we're not at the end of the list, propose the func operator on 
+   the current node's value. The operator will be applied..."
+  (state <s> ^name list*map
+             ^func <func>
+            -^result
+            -^advance
+             ^current.value <value>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name <func>
+       ^value <value>)
+}
+
+sp {list*map*propose*process-func-result
+  "If the func operator has posted a result, propose processing the
+   result"
+  (state <s> ^name list*map
+             ^result
+            -^advance)
+-->
+  (<s> ^operator.name list*map*process-func-result)
+}
+
+
+sp {list*map*apply*process-func-result-first
+  "Process the function's first result where we set up the head of
+   the new list we're constructing"
+  (state <s> ^name list*map
+             ^operator.name list*map*process-func-result
+             ^result <result>
+             ^result-head <result-head>
+            -^last-result)
+-->
+  (<s> ^result <result> -
+       ^advance true
+       ^result-head <result-head> - <new-result>
+       ^last-result <new-result>)
+  (<new-result> ^value <result> 
+                ^next nil)
+}
+
+sp {list*map*apply*process-func-result
+  "Process subsequent function results after the head of the new list
+   has been started"
+  (state <s> ^name list*map
+             ^operator.name list*map*process-func-result
+             ^result <result>
+             ^last-result <last-result>)
+-->
+  (<s> ^result <result> -
+       ^advance true
+       ^last-result <last-result> - <new-result>)
+  (<last-result> ^next nil - <new-result>)
+  (<new-result> ^value <result> 
+                ^next nil)
+}
+
+sp {list*map*propose*advance
+  (state <s> ^name list*map
+             ^advance)
+-->
+  (<s> ^operator.name list*map*advance)
+}
+
+sp {list*map*apply*advance
+  "Advance the current pointer in the list"
+  (state <s> ^name list*map
+             ^operator.name list*map*advance
+             ^advance <advance>
+             ^current <current>)
+  (<current> ^next <next>)
+-->
+  (<s> ^advance <advance> -
+       ^current <current> - <next>)
+}
+
+sp {list*map*propose*return
+  "If we've reached the end of the list, propose the return operator"
+  (state <s> ^name list*map
+             ^current nil)
+-->
+  (<s> ^operator.name list*map-return)
+}
+
+sp {list*map*apply*process-empty-return
+  "Return the resulting list"
+  (state <s> ^name list*map
+             ^operator.name list*map-return
+             ^superstate <ss>
+             ^current nil
+            -^result-head
+             ^return-to <return-to>)
+-->
+  (<ss> ^<return-to> nil)
+}
+
+sp {list*map*apply*process-return
+  "Return the resulting list"
+  (state <s> ^name list*map
+             ^operator.name list*map-return
+             ^superstate <ss>
+             ^current nil
+             ^result-head <result-head>
+             ^return-to <return-to>)
+-->
+  (<ss> ^<return-to> <result-head>)
+}
+

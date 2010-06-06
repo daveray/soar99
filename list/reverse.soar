@@ -1,0 +1,54 @@
+##########################################################################
+# Operator list*reverse - reverse a list
+#
+# ^operator
+#   ^name list*last
+#   ^head <head-of-list>
+#   ^return-to <name-of-result-attribute> (defaults to "result")
+
+sp {list*reverse*propose*init
+  (state <s> ^name list*reverse 
+            -^current)
+-->
+  (<s> ^operator.name list*reverse-init)
+}
+
+sp {list*reverse*apply*init
+  (state <s> ^name list*reverse
+             ^operator.name list*reverse-init
+             ^head <head>)
+-->
+  (<s> ^current <head>
+       ^new-head nil)
+}
+
+sp {list*reverse*propose*process
+  (state <s> ^name list*reverse 
+             ^current)
+-->
+  (<s> ^operator.name list*reverse-process)
+}
+
+sp {list*reverse*apply*process
+  (state <s> ^name list*reverse
+             ^operator.name list*reverse-process
+             ^current <current>
+             ^new-head <nh>)
+  (<current> ^next <next> 
+             ^value <value>)
+-->
+  (<s> ^current <current> - <next>
+       ^new-head <nh> - <nh2>)
+  (<nh2> ^next <nh> ^value <value>)
+}
+
+sp {list*reverse*apply*process-return
+  (state <s> ^name list*reverse
+             ^operator.name list*reverse-process
+             ^superstate <ss>
+             ^return-to <return-to>
+             ^current nil
+             ^new-head <nh>)
+-->
+  (<ss> ^<return-to> <nh>)
+}

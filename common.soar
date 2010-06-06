@@ -5,7 +5,7 @@ sp {elaborate*operator*attributes
   (<s> ^<name> <value>)
 }
 
-source "list.soar"
+source "list/list.soar"
 
 sp {propose*init
   (state <s> ^superstate nil

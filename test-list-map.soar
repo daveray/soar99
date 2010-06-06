@@ -1,0 +1,23 @@
+source common.soar
+
+sp {apply*double
+  "Multiply a value by 2"
+  (state <s> ^operator <o>)
+  (<o> ^name double
+       ^value <value>)
+-->
+  (<s> ^result (* <value> 2))
+}
+
+sp {test-list-map*propose*map
+  "Map 'double' operator on the input list"
+  (state <s> ^name test-list-map
+            -^result
+             ^input <input>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*map
+       ^func double
+       ^head <input>)
+}
+
