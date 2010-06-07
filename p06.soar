@@ -10,6 +10,15 @@ sp {succeeded
   (halt)
 }
 
+sp {palindrome?*elaborate*params
+  (state <s> ^superstate.operator <o>)
+  (<o> ^name palindrome?
+       ^head <head>)
+-->
+  (<s> ^name palindrome?
+       ^head <head>)
+}
+
 sp {propose*palindrome?
   (state <s> ^name p06
              ^input <input>

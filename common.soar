@@ -1,10 +1,4 @@
 
-sp {elaborate*operator*attributes
-  (state <s> ^superstate.operator.{ <name> <> return-to <> start <> step <> end } <value>)
--->
-  (<s> ^<name> <value>)
-}
-
 source "list/list.soar"
 
 sp {propose*init

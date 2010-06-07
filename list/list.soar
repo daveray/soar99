@@ -23,6 +23,7 @@ sp {list*elaborate*operator*default-args
   (<o> ^name <name>
       -^<arg>)
 -->
+  (<s> ^name <name>)
   (<s> ^<arg> <value>)
 }
 
@@ -35,6 +36,7 @@ sp {list*elaborate*operator*args
   (<o> ^name <name>
        ^<arg> <value>)
 -->
+  (<s> ^name <name>)
   (<s> ^<arg> <value>)
 }
 
