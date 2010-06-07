@@ -1,0 +1,66 @@
+##!
+#
+# ^operator
+#   ^name list*range
+#   ^start <start-value>
+#   ^end   <end-value>
+#   ^step  <step-value>
+
+sp {list*range*propose*init
+  (state <s> ^name list*range
+            -^value)
+-->
+  (<s> ^operator.name list*range-init)
+}
+
+sp {list*range*apply*init
+  (state <s> ^name list*range
+             ^operator.name list*range-init
+             ^start <start>
+             ^end <end>
+             ^step <step>)
+-->
+  (<s> ^value (+ <start> (* (- <end> 1) <step>))
+       ^index (- <end> 1)
+       ^result-head nil)
+}
+
+sp {list*range*propose*advance
+  (state <s> ^name list*range
+             ^index { <index> >= 0 })
+-->
+  (<s> ^operator.name list*range-advance)
+}
+
+sp {list*range*apply*advance
+  (state <s> ^name list*range
+             ^operator.name list*range-advance
+             ^index <index>
+             ^value <value>
+             ^step <step>
+             ^result-head <result-head>)
+-->
+  (<s> ^index <index> - (- <index> 1)
+       ^value <value> - (- <value> <step>)
+       ^result-head <result-head> - <new-node>)
+  (<new-node> ^value <value>
+              ^next <result-head>)
+}
+
+sp {list*range*propose*return
+  (state <s> ^name list*range
+             ^index < 0)
+-->
+  (<s> ^operator.name list*range-return)
+}
+
+sp {list*range*apply*return
+  (state <s> ^name list*range
+             ^operator.name list*range-return
+             ^superstate <ss>
+             ^return-to <return-to>
+             ^result-head <result-head>)
+-->
+  (<ss> ^<return-to> <result-head>)
+}
+

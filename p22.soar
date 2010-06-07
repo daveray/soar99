@@ -1,0 +1,34 @@
+source "common.soar"
+
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name p22
+       ^end 5)
+}
+
+sp {succeeded
+  (state <s> ^name p22
+             ^result <result>)
+  (<result> ^value 0 ^next <n0>)
+  (<n0> ^value 1 ^next <n1>)
+  (<n1> ^value 2 ^next <n2>)
+  (<n2> ^value 3 ^next <n3>)
+  (<n3> ^value 4 ^next nil)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+
+sp {propose*list*range
+  (state <s> ^name p22
+             ^end <end>
+            -^result)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*range
+       ^start 0 
+       ^end <end>
+       ^step 1)
+}
+
