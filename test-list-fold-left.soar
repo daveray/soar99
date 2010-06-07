@@ -1,0 +1,28 @@
+source common.soar
+
+sp {apply*add
+  "Multiply a value by 2"
+  (state <s> ^operator <o>)
+  (<o> ^name add
+       ^value <value>
+       ^previous <previous>)
+-->
+  (<s> ^result (+ <previous> <value>))
+  (write (crlf) |Applying add: | <previous> | + | <value>)
+}
+
+sp {test-list-fold-left*propose*fold-left
+  "Map 'double' operator on the input list"
+  (state <s> ^name test-list-fold-left
+            -^result
+             ^input <input>)
+  (<input> ^head <head>
+           ^initial-value <initial-value>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*fold-left
+       ^func add
+       ^head <head>
+       ^initial-value <initial-value>)
+}
+

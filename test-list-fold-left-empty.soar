@@ -1,0 +1,19 @@
+source "test-list-fold-left.soar"
+
+sp {test-list-fold-left*apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name test-list-fold-left
+       ^input <input>)
+  (<input> ^head nil
+           ^initial-value 99)
+}
+
+sp {succeeded
+  (state <s> ^name test-list-fold-left
+             ^result 99)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+
