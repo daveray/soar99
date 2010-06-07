@@ -1,16 +1,41 @@
 
-sp {list*apply*default*return-to
-  "When initializing a list operation, set the default ^return-to
-    value to 'result' if it's not given on the operator"
-  (state <s> ^name << list*last list*get list*size list*reverse 
-                      list*compare list*map list*fold-left list*range >>
-             ^operator.name << list*last-init list*get-init 
-                               list*size-init list*reverse-init 
-                               list*compare-init list*map-init 
-                               list*fold-left-init list*range-init >>
-            -^return-to)
+sp {list*elaborate*library-info
+  "Build initial library info on the top-state."
+  (state <s> ^superstate nil)
 -->
-  (<s> ^return-to result)
+  (<s> ^list*library <l>)
+  (<l> ^operators <ops>)
+}
+
+sp {list*elaborate*copy-library-info
+  "Copy library info to sub-states."
+  (state <s> ^superstate.list*library <l>)
+-->
+  (<s> ^list*library <l>)
+}
+
+sp {list*elaborate*operator*default-args
+  "When a list operator is active on the superstate, fill in default values
+   for any missing parameters using list*library info."
+  (state <s> ^superstate.operator <o>
+             ^list*library.operators <ops>)
+  (<ops> ^<name>.default.<arg> <value>)
+  (<o> ^name <name>
+      -^<arg>)
+-->
+  (<s> ^<arg> <value>)
+}
+
+sp {list*elaborate*operator*args
+  "When a list operator is active on the superstate, copy existing parameters
+   from the operator to the sub-state using list*library info."
+  (state <s> ^superstate.operator <o>
+             ^list*library.operators <ops>)
+  (<ops> ^<name>.<< required default >>.<arg>)
+  (<o> ^name <name>
+       ^<arg> <value>)
+-->
+  (<s> ^<arg> <value>)
 }
 
 source get.soar

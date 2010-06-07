@@ -27,8 +27,6 @@ sp {propose*list*range
 -->
   (<s> ^operator <o>)
   (<o> ^name list*range
-       ^start 0 
-       ^end <end>
-       ^step 1)
+       ^end <end>)
 }
 

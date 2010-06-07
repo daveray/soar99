@@ -6,6 +6,19 @@
 #   ^head <head-of-list> (nil for empty list)
 #   ^return-to <name-of-result-attribute>
 
+sp {list*size*elaborate*info
+  "Add info about this operator to the lib*library structure on the
+   top state."
+  (state <s> ^superstate nil
+             ^list*library.operators <ops>)
+-->
+  (<ops> ^list*size <args>)
+  (<args> ^default <def> 
+          ^required <req>)
+  (<def> ^return-to result)
+  (<req> ^head nil)
+}
+
 sp {list*size*propose*init
   (state <s> ^name list*size 
             -^current)

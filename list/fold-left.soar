@@ -16,6 +16,21 @@
 #   ^value    <list-value-to-process>
 #   ^previous <previous-result>
 
+sp {list*fold-left*elaborate*info
+  "Add info about this operator to the lib*library structure on the
+   top state."
+  (state <s> ^superstate nil
+             ^list*library.operators <ops>)
+-->
+  (<ops> ^list*fold-left <args>)
+  (<args> ^default <def> 
+          ^required <req>)
+  (<def> ^return-to result)
+  (<req> ^head *required*
+         ^func *required*
+         ^initial-value *required*)
+}
+
 sp {list*fold-left*propose*init
   (state <s> ^name list*fold-left
             -^current)
