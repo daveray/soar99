@@ -1,17 +1,17 @@
-# Compare two empty lists
-source "common.soar"
+# Compare two lists
+source "../common.soar"
 
 sp {apply*init
   (state <s> ^operator.name init)
 -->
-  (<s> ^name compare-equal-lists 
-       ^a nil
-       ^b nil
-       ^expected-result true)
+  (<s> ^name compare-unequal-lists 
+       ^a (list 1 this is a list of many values)
+       ^b (list 1 this is another list of many values)
+       ^expected-result false)
 }
 
 sp {succeeded
-  (state <s> ^name compare-equal-lists 
+  (state <s> ^name compare-unequal-lists 
              ^expected-result <expected>
              ^test-result <expected>)
 -->
@@ -20,7 +20,7 @@ sp {succeeded
 }
 
 sp {propose*list*compare
-  (state <s> ^name compare-equal-lists
+  (state <s> ^name compare-unequal-lists
              ^a <a>
              ^b <b>
             -^test-result)
