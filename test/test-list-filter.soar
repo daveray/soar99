@@ -1,0 +1,33 @@
+source ../common.soar
+
+sp {apply*less-than-10-true
+  "Return true if less than 10"
+  (state <s> ^operator <o>)
+  (<o> ^name less-than-10
+       ^value <value> < 10)
+-->
+  (<s> ^result true)
+  (write (crlf) <value> | is < 10|)
+}
+sp {apply*less-than-10-false
+  "Return true if less than 10"
+  (state <s> ^operator <o>)
+  (<o> ^name less-than-10
+       ^value <value> >= 10)
+-->
+  (<s> ^result false)
+  (write (crlf) <value> | is >= 10|)
+}
+
+sp {test-list-filter*propose*filter
+  "Filter input list with less-than-10"
+  (state <s> ^name test-list-filter
+            -^result
+             ^input <input>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*filter
+       ^func less-than-10
+       ^head <input>)
+}
+

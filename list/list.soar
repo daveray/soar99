@@ -48,4 +48,5 @@ source reverse.soar
 source map.soar
 source fold-left.soar
 source range.soar
+source filter.soar
 

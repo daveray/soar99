@@ -1,0 +1,17 @@
+source "test-list-filter.soar"
+
+sp {test-list-filter*apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name test-list-filter
+       ^input (list 11 11 11 23 56 70 10))
+}
+
+sp {succeeded
+  (state <s> ^name test-list-filter
+             ^result nil)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+

@@ -36,6 +36,16 @@ source "test/test-list-map-non-empty.soar"
 run -f
 
 excise --all
+echo "test/test-list-filter-empty-result.soar"
+source "test/test-list-filter-empty-result.soar"
+run -f
+
+excise --all
+echo "test/test-list-filter-normal-result.soar"
+source "test/test-list-filter-normal-result.soar"
+run -f
+
+excise --all
 echo "p01.soar"
 source "p01.soar"
 run -f
