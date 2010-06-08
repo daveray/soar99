@@ -1,0 +1,74 @@
+watch 0
+
+excise --all
+echo "test/test-list-compare-0.soar"
+source "test/test-list-compare-0.soar"
+run -f
+
+excise --all
+echo "test/test-list-compare-1.soar" 
+source "test/test-list-compare-1.soar" 
+run -f
+
+excise --all
+echo "test/test-list-compare-2.soar" 
+source "test/test-list-compare-2.soar" 
+run -f
+
+excise --all
+echo "test/test-list-fold-left-empty.soar"
+source "test/test-list-fold-left-empty.soar"
+run -f
+
+excise --all
+echo "test/test-list-fold-left-non-empty.soar" 
+source "test/test-list-fold-left-non-empty.soar" 
+run -f
+
+excise --all
+echo "test/test-list-map-empty.soar"
+source "test/test-list-map-empty.soar"
+run -f
+
+excise --all
+echo "test/test-list-map-non-empty.soar"
+source "test/test-list-map-non-empty.soar"
+run -f
+
+excise --all
+echo "p01.soar"
+source "p01.soar"
+run -f
+
+excise --all
+echo "p03.soar"
+source "p03.soar"
+run -f
+
+excise --all
+echo "p04.soar"
+source "p04.soar"
+run -f
+
+excise --all
+echo "p05.soar"
+source "p05.soar"
+run -f
+
+excise --all
+echo "p06-false.soar"
+source "p06-false.soar"
+run -f
+
+excise --all
+echo "p06-true.soar"
+source "p06-true.soar"
+run -f
+
+excise --all
+echo "p22.soar"
+source "p22.soar"
+run -f
+
+echo "DONE"
+excise --all
