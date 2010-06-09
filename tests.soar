@@ -1,49 +1,6 @@
 watch 0
 
-excise --all
-echo "test/test-list-compare-0.soar"
-source "test/test-list-compare-0.soar"
-run -f
-
-excise --all
-echo "test/test-list-compare-1.soar" 
-source "test/test-list-compare-1.soar" 
-run -f
-
-excise --all
-echo "test/test-list-compare-2.soar" 
-source "test/test-list-compare-2.soar" 
-run -f
-
-excise --all
-echo "test/test-list-fold-left-empty.soar"
-source "test/test-list-fold-left-empty.soar"
-run -f
-
-excise --all
-echo "test/test-list-fold-left-non-empty.soar" 
-source "test/test-list-fold-left-non-empty.soar" 
-run -f
-
-excise --all
-echo "test/test-list-map-empty.soar"
-source "test/test-list-map-empty.soar"
-run -f
-
-excise --all
-echo "test/test-list-map-non-empty.soar"
-source "test/test-list-map-non-empty.soar"
-run -f
-
-excise --all
-echo "test/test-list-filter-empty-result.soar"
-source "test/test-list-filter-empty-result.soar"
-run -f
-
-excise --all
-echo "test/test-list-filter-normal-result.soar"
-source "test/test-list-filter-normal-result.soar"
-run -f
+source "test/run.soar"
 
 excise --all
 echo "p01.soar"

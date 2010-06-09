@@ -1,0 +1,22 @@
+source "test-list-slice.soar"
+
+sp {test-list-slice*apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name test-list-slice
+       ^input <input>)
+  (<input> ^head (list 2 4 6 8 10)
+           ^end 3)
+}
+
+sp {succeeded
+  (state <s> ^name test-list-slice
+             ^result <result>)
+  (<result> ^value 2 ^next <n0>)
+  (<n0> ^value 4 ^next <n1>)
+  (<n1> ^value 6 ^next nil)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+

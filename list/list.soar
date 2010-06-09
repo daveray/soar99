@@ -49,4 +49,5 @@ source map.soar
 source fold-left.soar
 source range.soar
 source filter.soar
+source "slice.soar"
 
