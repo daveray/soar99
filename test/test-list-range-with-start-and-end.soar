@@ -1,0 +1,38 @@
+source "test-list-range.soar"
+
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name test*list*range
+       ^start 10
+       ^end 13
+       ^step 10)
+}
+
+sp {succeeded
+  (state <s> ^name test*list*range
+             ^result <result>)
+  (<result> ^value 0 ^next <n0>)
+  (<n0> ^value 10 ^next <n1>)
+  (<n1> ^value 20 ^next <n2>)
+  (<n2> ^value 30 ^next nil)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+
+sp {propose*list*range
+  (state <s> ^name test*list*range
+             ^end <end>
+             ^start <start>
+             ^step <step>
+            -^result)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*range
+       ^end <end>
+       ^start <start>
+       ^end <end>
+       ^step <step>)
+}
+

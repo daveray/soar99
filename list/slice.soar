@@ -27,38 +27,37 @@ sp {list*slice*elaborate*info
 }
 
 sp {list*slice*apply*filter*func-true
+  "If the current index is inside of [start, end) return true"
   (state <s> ^superstate <ss> 
              ^operator <o>)
   (<ss> ^name list*slice
         ^start <start>
         ^end   <end>)
-  (<o> ^name list*slice-filter ^index { <index> >= <start> < <end> })
+  (<o> ^name list*slice-filter 
+       ^index { <index> >= <start> < <end> })
 -->
   (<s> ^result true)
 }
 
-# TODO: merge the two false rules
-sp {list*slice*apply*filter*func-false-0
+sp {list*slice*apply*filter*func-false
+  "If the current index is outside of [start, end) return false"
   (state <s> ^superstate <ss> 
              ^operator <o>)
   (<ss> ^name list*slice
-        ^start <start>)
-  (<o> ^name list*slice-filter ^index { <index> < <start> })
--->
-  (<s> ^result false)
-}
-
-sp {list*slice*apply*filter*func-false-1
-  (state <s> ^superstate <ss> 
-             ^operator <o>)
-  (<ss> ^name list*slice
+        ^start <start>
         ^end   <end>)
-  (<o> ^name list*slice-filter ^index { <index> >= <end> })
+  (<o> ^name list*slice-filter)
+ -{ # OR
+   -{ (<o> ^index { <index> < <start> }) }
+   -{ (<o> ^index { <index> >= <end> }) }
+  }
 -->
   (<s> ^result false)
 }
 
 sp {list*slice*propose*filter
+  "If list*slice is proposed and there's no result, propose list*filter
+   to filter the list based on index"
   (state <s> ^name list*slice
             -^result
              ^head <head>)

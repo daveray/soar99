@@ -60,5 +60,15 @@ echo "test-list-slice-with-start-and-end.soar"
 source "test-list-slice-with-start-and-end.soar"
 run -f
 
+excise --all
+echo "test-list-range-no-start.soar"
+source "test-list-range-no-start.soar"
+run -f
+
+excise --all
+echo "test-list-range-with-start-and-end.soar"
+source "test-list-range-with-start-and-end.soar"
+run -f
+
 echo "DONE"
 excise --all

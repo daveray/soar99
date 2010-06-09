@@ -32,10 +32,5 @@ echo "p06-true.soar"
 source "p06-true.soar"
 run -f
 
-excise --all
-echo "p22.soar"
-source "p22.soar"
-run -f
-
 echo "DONE"
 excise --all
