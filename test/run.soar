@@ -70,5 +70,25 @@ echo "test-list-range-with-start-and-end.soar"
 source "test-list-range-with-start-and-end.soar"
 run -f
 
+excise --all
+echo "test-list-append-both-empty.soar"
+source "test-list-append-both-empty.soar"
+run -f
+
+excise --all
+echo "test-list-append-first-empty.soar"
+source "test-list-append-first-empty.soar"
+run -f
+
+excise --all
+echo "test-list-append-second-empty.soar"
+source "test-list-append-second-empty.soar"
+run -f
+
+excise --all
+echo "test-list-append-neither-empty.soar"
+source "test-list-append-neither-empty.soar"
+run -f
+
 echo "DONE"
 excise --all

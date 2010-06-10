@@ -5,17 +5,17 @@ sp {apply*init
 -->
   (<s> ^name test*list*range
        ^start 10
-       ^end 13
-       ^step 10)
+       ^end 16
+       ^step 2)
 }
 
 sp {succeeded
   (state <s> ^name test*list*range
              ^result <result>)
-  (<result> ^value 0 ^next <n0>)
-  (<n0> ^value 10 ^next <n1>)
-  (<n1> ^value 20 ^next <n2>)
-  (<n2> ^value 30 ^next nil)
+  (<result> ^value 10 ^next <n1>)
+  (<n1> ^value 12 ^next <n2>)
+  (<n2> ^value 14 ^next <n3>)
+  (<n3> ^value 16 ^next nil)
 -->
   (write (crlf) |Succeeded|)
   (halt)

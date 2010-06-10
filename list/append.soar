@@ -40,6 +40,7 @@ sp {list*append*apply*init
 }
 
 sp {list*append*propose*process
+  "If we're not at the last node, propose advancing the current pointer"
   (state <s> ^name list*append 
              ^current.next <> nil)
 -->
@@ -47,6 +48,7 @@ sp {list*append*propose*process
 }
 
 sp {list*append*apply*process-continue
+  "Advance the current pointer"
   (state <s> ^name list*append
              ^operator.name list*append-process
              ^current <current>)
@@ -55,34 +57,29 @@ sp {list*append*apply*process-continue
   (<s> ^current <current> - <next>)
 }
 
-sp {list*append*propose*splice
+sp {list*append*propose*splice-and-return
+  "If we're at the last node, propose doing the splice operation and returning"
   (state <s> ^name list*append
-             ^current.next nil
-            -^spliced)
+             ^current.next nil)
 -->
-  (<s> ^operator.name list*append-splice)
+  (<s> ^operator.name list*append-splice-and-return)
 }
 
 sp {list*append*apply*splice
+  "Splice the end of first to second and set the return value in the 
+   superstate. By modifying the list, GDS will eliminate the current
+   state, which is why we both splice and return here."
   (state <s> ^name list*append
-             ^operator.name list*append-splice
+             ^operator.name list*append-splice-and-return
+             ^return-to <return-to>
+             ^superstate <ss>
              ^current <current>
              ^first <first>
              ^second <second>)
   (<current> ^next <next>)
 -->
   (<current> ^next <next> - <second>)
-  (<s> ^spliced <first>)
-}
-
-sp {list*append*propose*return-spliced
-  "If both lists are empty, just return nil"
-  (state <s> ^name list*append
-             ^spliced <spliced>)
--->
-  (<s> ^operator <o>)
-  (<o> ^name list*append*return
-       ^result <spliced>)
+  (<ss> ^<return-to> <first>)
 }
 
 sp {list*append*propose*return-nil

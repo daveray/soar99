@@ -7,7 +7,7 @@
 #   ^step  <step-value>
 
 sp {list*range*elaborate*info
-  "Add info about this operator to the lib*library structure on the
+  "Add info about this operator to the list*library structure on the
    top state."
   (state <s> ^superstate nil
              ^list*library.operators <ops>)
@@ -35,14 +35,14 @@ sp {list*range*apply*init
              ^end <end>
              ^step <step>)
 -->
-  (<s> ^value (+ <start> (* (- <end> 1) <step>))
-       ^index (- <end> 1)
+  (<s> ^value <start>
        ^result-head nil)
 }
 
 sp {list*range*propose*advance
   (state <s> ^name list*range
-             ^index { <index> >= 0 })
+             ^end <end>
+             ^value { <value> <= <end> })
 -->
   (<s> ^operator.name list*range-advance)
 }
@@ -50,21 +50,33 @@ sp {list*range*propose*advance
 sp {list*range*apply*advance
   (state <s> ^name list*range
              ^operator.name list*range-advance
-             ^index <index>
              ^value <value>
              ^step <step>
              ^result-head <result-head>)
 -->
-  (<s> ^index <index> - (- <index> 1)
-       ^value <value> - (- <value> <step>)
+  (<s> ^value <value> - (+ <value> <step>)
        ^result-head <result-head> - <new-node>)
   (<new-node> ^value <value>
               ^next <result-head>)
 }
 
+sp {list*range*propose*reverse
+  (state <s> ^name list*range
+             ^result-head <result-head>
+             ^end <end>
+             ^value > <end>
+            -^reversed-result)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*reverse
+       ^head <result-head>
+       ^return-to reversed-result)
+}
+
+
 sp {list*range*propose*return
   (state <s> ^name list*range
-             ^index < 0)
+             ^reversed-result)
 -->
   (<s> ^operator.name list*range-return)
 }
@@ -74,7 +86,7 @@ sp {list*range*apply*return
              ^operator.name list*range-return
              ^superstate <ss>
              ^return-to <return-to>
-             ^result-head <result-head>)
+             ^reversed-result <result-head>)
 -->
   (<ss> ^<return-to> <result-head>)
 }

@@ -4,7 +4,7 @@ sp {apply*init
   (state <s> ^operator.name init)
 -->
   (<s> ^name test*list*range
-       ^end 5)
+       ^end 4)
 }
 
 sp {succeeded
