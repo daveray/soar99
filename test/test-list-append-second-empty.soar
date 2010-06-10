@@ -1,0 +1,20 @@
+source "test-list-append.soar"
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name test-list-append
+       ^first (list a b c d)
+       ^second nil)
+}
+
+sp {succeeded
+  (state <s> ^name test-list-append
+             ^result <result>)
+  (<result> ^value a ^next <n0>)
+  (<n0> ^value b ^next <n1>)
+  (<n1> ^value c ^next <n2>)
+  (<n2> ^value d ^next nil)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}

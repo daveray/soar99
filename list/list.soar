@@ -50,4 +50,5 @@ source fold-left.soar
 source range.soar
 source filter.soar
 source "slice.soar"
+source "append.soar"
 

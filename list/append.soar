@@ -1,0 +1,131 @@
+##########################################################################
+# Operator list*append - Destructively append one list onto the end of 
+# another.
+#
+# ^operator
+#   ^name list*append
+#   ^first <head-of-first-list>
+#   ^second <head-of-second-list>
+#   ^return-to <name-of-result-attribute> (defaults to "result")
+
+sp {list*append*elaborate*info
+  "Add info about this operator to the lib*library structure on the
+   top state."
+  (state <s> ^superstate nil
+             ^list*library.operators <ops>)
+-->
+  (<ops> ^list*append <args>)
+  (<args> ^default <def> 
+          ^required <req>)
+  (<def> ^first nil
+         ^second nil
+         ^return-to result)
+}
+
+sp {list*append*propose*init
+  (state <s> ^name list*append 
+             ^first <> nil
+             ^second <> nil
+            -^current)
+-->
+  (<s> ^operator.name list*append-init)
+}
+
+sp {list*append*apply*init
+  (state <s> ^name list*append
+             ^operator.name list*append-init
+             ^first <first>)
+-->
+  (<s> ^current <first>)
+}
+
+sp {list*append*propose*process
+  (state <s> ^name list*append 
+             ^current.next <> nil)
+-->
+  (<s> ^operator.name list*append-process)
+}
+
+sp {list*append*apply*process-continue
+  (state <s> ^name list*append
+             ^operator.name list*append-process
+             ^current <current>)
+  (<current> ^next <next>)
+-->
+  (<s> ^current <current> - <next>)
+}
+
+sp {list*append*propose*splice
+  (state <s> ^name list*append
+             ^current.next nil
+            -^spliced)
+-->
+  (<s> ^operator.name list*append-splice)
+}
+
+sp {list*append*apply*splice
+  (state <s> ^name list*append
+             ^operator.name list*append-splice
+             ^current <current>
+             ^first <first>
+             ^second <second>)
+  (<current> ^next <next>)
+-->
+  (<current> ^next <next> - <second>)
+  (<s> ^spliced <first>)
+}
+
+sp {list*append*propose*return-spliced
+  "If both lists are empty, just return nil"
+  (state <s> ^name list*append
+             ^spliced <spliced>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*append*return
+       ^result <spliced>)
+}
+
+sp {list*append*propose*return-nil
+  "If both lists are empty, just return nil"
+  (state <s> ^name list*append
+             ^first nil
+             ^second nil)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*append*return
+       ^result nil)
+}
+
+sp {list*append*propose*return-first
+  "If the second list is empty, just return the first"
+  (state <s> ^name list*append
+             ^first {<first> <> nil}
+             ^second nil)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*append*return
+       ^result <first>)
+}
+
+sp {list*append*propose*return-second
+  "If the first list is empty, just return the second"
+  (state <s> ^name list*append
+             ^first nil
+             ^second {<second> <> nil})
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*append*return
+       ^result <second>)
+}
+
+sp {list*append*apply*return
+  (state <s> ^name list*append
+             ^operator <o>
+             ^return-to <return-to>
+             ^superstate <ss>)
+  (<o> ^name list*append*return
+       ^result <result>)
+-->
+  (<ss> ^<return-to> <result>)
+}
+

@@ -1,0 +1,14 @@
+source "../common.soar"
+
+sp {test*list*append*propose*list*append
+  (state <s> ^name test-list-append
+             ^first <first>
+             ^second <second>
+            -^result)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*append
+       ^first <first>
+       ^second <second>)
+}
+
