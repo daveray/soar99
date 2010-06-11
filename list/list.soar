@@ -40,6 +40,7 @@ sp {list*elaborate*operator*args
   (<s> ^<arg> <value>)
 }
 
+source functions.soar
 source get.soar
 source size.soar
 source last.soar
@@ -50,5 +51,6 @@ source fold-left.soar
 source range.soar
 source filter.soar
 source "slice.soar"
+source "append-common.soar"
 source "append.soar"
-
+source "append-fast.soar"

@@ -32,5 +32,25 @@ echo "p06-true.soar"
 source "p06-true.soar"
 run -f
 
+excise --all
+echo "p16.soar"
+source "p16.soar"
+run -f
+
+excise --all
+echo "p17.soar"
+source "p17.soar"
+run -f
+
+# ignore p18, it's in list/slice tests
+
+excise --all
+echo "p19.soar"
+source "p19.soar"
+run -f
+#
+# ignore p22, it's in list/range tests
+
 echo "DONE"
 excise --all
+

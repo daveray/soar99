@@ -1,0 +1,68 @@
+# rotate a list N places to the left
+source "common.soar"
+
+sp {apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name p19
+       ^head (list 1 2 3 4 5 6 7 8 9)
+           ^N 3)
+}
+
+sp {succeeded
+  (state <s> ^name p19
+             ^result <result>)
+  (<result> ^value 4 ^next <n0>)
+  (<n0> ^value 5 ^next  <n1>)
+  (<n1> ^value 6 ^next  <n2>)
+  (<n2> ^value 7 ^next  <n3>)
+  (<n3> ^value 8 ^next  <n4>)
+  (<n4> ^value 9 ^next  <n5>)
+  (<n5> ^value 1 ^next  <n6>)
+  (<n6> ^value 2 ^next  <n7>)
+  (<n7> ^value 3 ^next  nil)
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+
+sp {p19*propose*slice*first
+  (state <s> ^name p19
+            -^first
+             ^head <head>
+             ^N <n>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*slice
+       ^head <head>
+       ^end <n>
+       ^return-to first)
+}
+
+sp {p19*propose*slice*second
+  (state <s> ^name p19
+             ^first
+            -^second 
+             ^head <head>
+             ^N <n>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*slice
+       ^head <head>
+       ^start <n>
+       ^return-to second)
+}
+
+sp {p19*propose*append
+  (state <s> ^name p19
+             ^first <first>
+             ^second <second>
+            -^result)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*append
+       ^first <second>
+       ^second <first>
+       ^return-to result)
+}
+

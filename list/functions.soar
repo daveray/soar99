@@ -1,0 +1,12 @@
+##!
+# Common "functions"
+
+sp {list*identity*apply
+  "Identity operator"
+  (state <s> ^operator <o>)
+  (<o> ^name list*identity
+       ^value <value>)
+-->
+  (<s> ^result <value>)
+}
+       
