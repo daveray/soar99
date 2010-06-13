@@ -19,7 +19,9 @@ sp {test-list-map*propose*map
 -->
   (<s> ^operator <o>)
   (<o> ^name list*map
-       ^func double
+       ^func <f>
        ^head <input>)
+  (<f> ^name list*multiply
+       ^args.factor 2)
 }
 

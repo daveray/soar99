@@ -50,7 +50,7 @@ sp {list*map*propose*func
   "If we're not at the end of the list, propose the func operator on 
    the current node's value. The operator will be applied..."
   (state <s> ^name list*map
-             ^func <func>
+             ^func.name <func>
             -^result
              ^current.value <value>
              ^index <index>)

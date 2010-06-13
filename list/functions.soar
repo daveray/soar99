@@ -10,3 +10,13 @@ sp {list*identity*apply
   (<s> ^result <value>)
 }
        
+sp {list*multiply*apply
+  "Identity operator"
+  (state <s> ^operator <o>)
+  (<o> ^name list*multiply
+       ^factor <factor>
+       ^value <value>)
+-->
+  (<s> ^result (* <factor> <value>))
+}
+       

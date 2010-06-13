@@ -40,6 +40,31 @@ sp {list*elaborate*operator*args
   (<s> ^<arg> <value>)
 }
 
+sp {list*common*elaborate*named-function*with*args
+  "For list operators that apply a function, if only an operator name is given,
+   construct the function structure expected by those operators."
+  (state <s> ^name << list*filter list*map list*fold-left >>
+             ^func { <func-name> <=> string })
+-->
+  (<s> ^func <f>)
+  (<f> ^name <func-name>)
+}
+
+sp {list*common*elaborate*copy*function*proposal*args
+  "For list operators that apply a function, copy any non-name arguments
+   from the function parameter (func) to the operator proposal. This allows
+   for a very rudimentary form of currying."
+  (state <s> ^func <func>
+             ^name <list-op-name>
+             ^operator <o>
+             ^list*library.operators.<list-op-name>)
+  (<func> ^name <name>
+          ^args.{<arg> <> name} <value>)
+  (<o> ^name <name>)
+-->
+  (<o> ^<arg> <value>)
+}
+
 source functions.soar
 source get.soar
 source size.soar
