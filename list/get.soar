@@ -21,49 +21,46 @@ sp {list*get*elaborate*info
          ^index nil)
 }
 
-sp {list*get*propose*init
-  (state <s> ^name list*get 
-             -^current)
--->
-  (<s> ^operator.name list*get-init)
-}
-
-sp {list*get*apply*init
+sp {list*get*propose*advance
   (state <s> ^name list*get
-             ^operator.name list*get-init
-             ^head <head>)
+             ^head <head>
+             ^index <index>
+            -^result)
 -->
-  (<s> ^current <head> ^i 0)
+  (<s> ^operator <o>)
+  (<o> ^name list*advance
+       ^count <index>
+       ^head <head>)
 }
 
-sp {list*get*propose*process
-  (state <s> ^name list*get 
-             ^current)
--->
-  (<s> ^operator.name list*get-process)
-}
-
-sp {list*get*apply*process
+sp {list*get*propose*return
   (state <s> ^name list*get
-             ^operator.name list*get-process
-             ^index <index>
-             ^i { <i> <> <index> }
-             ^current <current>)
-  (<current> ^next <next>)
+             ^result)
 -->
-  (<s> ^current <current> - <next>
-       ^i <i> - (+ <i> 1))
+  (<s> ^operator.name list*get-return)
 }
 
-sp {list*get*apply*process-return
-  (state <s> ^name list*get 
-             ^operator.name list*get-process
-             ^index <index>
-             ^i <index>
+sp {list*get*elaborate*return-nil
+  (state <s> ^name list*get
+             ^result.head nil)
+-->
+  (<s> ^return nil)
+}
+
+sp {list*get*elaborate*return-non-nil
+  (state <s> ^name list*get
+             ^result.head.value <value>)
+-->
+  (<s> ^return <value>)
+}
+
+sp {list*get*apply*return
+  (state <s> ^name list*get
+             ^operator.name list*get-return
              ^superstate <ss>
-             ^return-to <return-to>
-             ^current <current>)
-  (<current> ^value <value>)
+             ^return <value> 
+             ^return-to <return-to>)
 -->
   (<ss> ^<return-to> <value>)
 }
+
