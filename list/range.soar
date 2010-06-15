@@ -29,6 +29,8 @@ sp {list*range*propose*init
 }
 
 sp {list*range*apply*init
+  "Set up the initial state for the operator, including the initial builder
+   for constructing the result list"
   (state <s> ^name list*range
              ^operator.name list*range-init
              ^start <start>
@@ -36,57 +38,52 @@ sp {list*range*apply*init
              ^step <step>)
 -->
   (<s> ^value <start>
-       ^result-head nil)
+       ^builder <builder>)
+  (<builder> ^head nil
+             ^end nil)
 }
 
 sp {list*range*propose*advance
+  "If we're not past the end of the range, propose adding another 
+   value to the result list"
   (state <s> ^name list*range
              ^end <end>
-             ^value { <value> <= <end> })
+             ^value { <value> <= <end> }
+             ^builder <builder>)
 -->
-  (<s> ^operator.name list*range-advance)
+  (<s> ^operator <o>)
+  (<o> ^name list*builder*add
+       ^this <builder>
+       ^value <value>)
 }
 
 sp {list*range*apply*advance
+  "While adding to the result list, calculate next value using current value
+   and step"
   (state <s> ^name list*range
-             ^operator.name list*range-advance
-             ^value <value>
-             ^step <step>
-             ^result-head <result-head>)
+             ^operator.name list*builder*add
+             ^value <old-value>
+             ^step <step>)
 -->
-  (<s> ^value <value> - (+ <value> <step>)
-       ^result-head <result-head> - <new-node>)
-  (<new-node> ^value <value>
-              ^next <result-head>)
+  (<s> ^value <old-value> - (+ <old-value> <step>))
 }
-
-sp {list*range*propose*reverse
-  (state <s> ^name list*range
-             ^result-head <result-head>
-             ^end <end>
-             ^value > <end>
-            -^reversed-result)
--->
-  (<s> ^operator <o>)
-  (<o> ^name list*reverse
-       ^head <result-head>
-       ^return-to reversed-result)
-}
-
 
 sp {list*range*propose*return
+  "If we're at the end of the range, propose return"
   (state <s> ^name list*range
-             ^reversed-result)
+             ^end <end>
+             ^value > <end>)
 -->
   (<s> ^operator.name list*range-return)
 }
 
 sp {list*range*apply*return
+  "Put result list on the parent state"
   (state <s> ^name list*range
              ^operator.name list*range-return
              ^superstate <ss>
              ^return-to <return-to>
-             ^reversed-result <result-head>)
+             ^builder.head <result-head>)
 -->
   (<ss> ^<return-to> <result-head>)
 }

@@ -41,8 +41,10 @@ sp {list*filter*apply*init
              ^head <head>)
 -->
   (<s> ^current <head>
-       ^result-head nil
-       ^index 0)
+       ^index 0
+       ^builder <builder>)
+  (<builder> ^head nil
+             ^end nil)
 }
 
 sp {list*filter*propose*func
@@ -60,52 +62,33 @@ sp {list*filter*propose*func
        ^index <index>)
 }
 
-sp {list*filter*propose*process-func-result
-  "If the func operator has posted a result, propose processing the
-   result"
+sp {list*filter*propose*add-to-result
+  "If the func operator returned true, propose adding the value to the result 
+   list"
   (state <s> ^name list*filter
-             ^result)
--->
-  (<s> ^operator.name list*filter*process-func-result)
-}
-
-
-sp {list*filter*apply*process-func-result*first
-  "Process the function's first result where we set up the head of
-   the new list we're constructing"
-  (state <s> ^name list*filter
-             ^operator.name list*filter*process-func-result
-             ^result true
-             ^result-head <result-head>
-             ^current.value <value>
-            -^result-end)
--->
-  (<s> ^result-head <result-head> - <new-result>
-       ^result-end <new-result>)
-  (<new-result> ^value <value> 
-                ^next nil)
-}
-
-sp {list*filter*apply*process-func-result
-  "Process subsequent function results after the head of the new list
-   has been started"
-  (state <s> ^name list*filter
-             ^operator.name list*filter*process-func-result
              ^result true
              ^current.value <value>
-             ^result-end <result-end>)
+             ^builder <builder>)
 -->
-  (<s> ^result-end <result-end> - <new-result>)
-  (<result-end> ^next nil - <new-result>)
-  (<new-result> ^value <value> 
-                ^next nil)
+  (<s> ^operator <o>)
+  (<o> ^name list*builder*add
+       ^this <builder>
+       ^value <value>)
 }
 
-sp {list*filter*apply*process-func-result*advance
+sp {list*filter*propose*ignore
+  "If the func returned true, don't add it to the result list"
+  (state <s> ^name list*filter
+             ^result false)
+-->
+  (<s> ^operator.name list*filter*ignore)
+}
+
+sp {list*filter*apply**advance
   "Advance the current pointer in the list while processing 
    most recent function result"
   (state <s> ^name list*filter
-             ^operator.name list*filter*process-func-result
+             ^operator.name << list*builder*add list*filter*ignore >>
              ^result <result>
              ^current <current>
              ^index <index>)
@@ -129,7 +112,7 @@ sp {list*filter*apply*process-return
   (state <s> ^name list*filter
              ^operator.name list*filter-return
              ^superstate <ss>
-             ^result-head <result-head>
+             ^builder.head <result-head>
              ^return-to <return-to>)
 -->
   (<ss> ^<return-to> <result-head>)

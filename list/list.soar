@@ -65,6 +65,7 @@ sp {list*common*elaborate*copy*function*proposal*args
   (<o> ^<arg> <value>)
 }
 
+source builder.soar
 source functions.soar
 source advance.soar
 source get.soar
