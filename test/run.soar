@@ -1,5 +1,6 @@
 watch 0
 
+########################################################################
 excise --all
 echo "test-list-compare-0.soar"
 source "test-list-compare-0.soar"
@@ -15,6 +16,7 @@ echo "test-list-compare-2.soar"
 source "test-list-compare-2.soar" 
 run -f
 
+########################################################################
 excise --all
 echo "test-list-fold-left-empty.soar"
 source "test-list-fold-left-empty.soar"
@@ -25,6 +27,7 @@ echo "test-list-fold-left-non-empty.soar"
 source "test-list-fold-left-non-empty.soar" 
 run -f
 
+########################################################################
 excise --all
 echo "test-list-map-empty.soar"
 source "test-list-map-empty.soar"
@@ -35,6 +38,7 @@ echo "test-list-map-non-empty.soar"
 source "test-list-map-non-empty.soar"
 run -f
 
+########################################################################
 excise --all
 echo "test-list-filter-empty-result.soar"
 source "test-list-filter-empty-result.soar"
@@ -45,6 +49,7 @@ echo "test-list-filter-normal-result.soar"
 source "test-list-filter-normal-result.soar"
 run -f
 
+########################################################################
 excise --all
 echo "test-list-slice-no-end.soar"
 source "test-list-slice-no-end.soar"
@@ -60,6 +65,7 @@ echo "test-list-slice-with-start-and-end.soar"
 source "test-list-slice-with-start-and-end.soar"
 run -f
 
+########################################################################
 excise --all
 echo "test-list-range-no-start.soar"
 source "test-list-range-no-start.soar"
@@ -70,6 +76,7 @@ echo "test-list-range-with-start-and-end.soar"
 source "test-list-range-with-start-and-end.soar"
 run -f
 
+########################################################################
 excise --all
 echo "test-list-append-both-empty.soar"
 source "test-list-append-both-empty.soar"
@@ -89,6 +96,27 @@ excise --all
 echo "test-list-append-neither-empty.soar"
 source "test-list-append-neither-empty.soar"
 run -f
+########################################################################
+excise --all
+echo "test-list-zip-both-empty.soar"
+source "test-list-zip-both-empty.soar"
+run -f
 
+excise --all
+echo "test-list-zip-both-same-length.soar"
+source "test-list-zip-both-same-length.soar"
+run -f
+
+excise --all
+echo "test-list-zip-first-longer.soar"
+source "test-list-zip-first-longer.soar"
+run -f
+
+excise --all
+echo "test-list-zip-second-longer.soar"
+source "test-list-zip-second-longer.soar"
+run -f
+
+######################################################################3
 echo "DONE"
 excise --all

@@ -1,0 +1,14 @@
+source "../common.soar"
+
+sp {test-list-zip*propose*zip
+  (state <s> ^name test-list-zip
+             ^input <input>)
+  (<input> ^first <first>
+           ^second <second>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*zip
+       ^first <first>
+       ^second <second>)
+}
+

@@ -1,0 +1,24 @@
+source "test-list-zip.soar"
+
+sp {test-list-zip*apply*init
+  (state <s> ^operator.name init)
+-->
+  (<s> ^name test-list-zip
+       ^input <input>)
+  (<input> ^first (list 5 4 3 2)
+           ^second (list five four))
+}
+
+sp {succeeded
+  (state <s> ^name test-list-zip
+             ^result <result>)
+  (<result> ^value (^first 5 ^second five) 
+    ^next (^value (^first 4 ^second four)
+      ^next (^value (^first 3 ^second nil)
+        ^next (^value (^first 2 ^second nil)
+          ^next nil))))
+-->
+  (write (crlf) |Succeeded|)
+  (halt)
+}
+

@@ -81,3 +81,5 @@ source "slice.soar"
 source "append-common.soar"
 source "append.soar"
 source "append-fast.soar"
+source "zip.soar"
+

@@ -7,6 +7,12 @@
 #   ^second <head-of-second-list>
 #   ^default <default-value-when-list-runs-out> (defaults to nil)
 #   ^return-to <name-of-result-attribute> (defaults to "result")
+#
+# The structure of the values of the result list looks like:
+#
+# ^value
+#    ^first  <value-from-first-list>
+#    ^second <value-from-second-list>
 
 sp {list*zip*elaborate*info
   "Add info about this operator to the lib*library structure on the
@@ -18,7 +24,7 @@ sp {list*zip*elaborate*info
   (<args> ^default <def> 
           ^required <req>)
   (<def> ^return-to result
-         ^default default)
+         ^default nil)
   (<req> ^first nil
          ^second nil)
 }
@@ -37,8 +43,8 @@ sp {list*zip*apply*init
              ^first <first>
              ^second <second>)
 -->
-  (<s> ^cfirst <a>
-       ^csecond <b>
+  (<s> ^cfirst <first>
+       ^csecond <second>
        ^builder <builder>)
   (<builder> ^head nil
              ^end nil)
@@ -52,18 +58,67 @@ sp {list*zip*propose*return
   (<s> ^operator.name list*zip-return)
 }
 
+###########################################################################
+
+sp {list*zip*propose*prepare-value-both
+  (state <s> ^name list*zip 
+            -^value
+             ^cfirst.value  <first-value>
+             ^csecond.value <second-value>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*zip*prepare-value
+       ^first <first-value>
+       ^second <second-value>)
+}
+
+sp {list*zip*propose*prepare-value-first-done
+  (state <s> ^name list*zip 
+            -^value
+             ^cfirst nil
+             ^csecond.value <second-value>
+             ^default <default>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*zip*prepare-value
+       ^first <default>
+       ^second <second-value>)
+}
+
+sp {list*zip*propose*prepare-value-second-done
+  (state <s> ^name list*zip 
+            -^value
+             ^cfirst.value <first-value>
+             ^csecond nil
+             ^default <default>)
+-->
+  (<s> ^operator <o>)
+  (<o> ^name list*zip*prepare-value
+       ^first <first-value>
+       ^second <default>)
+}
+
+sp {list*zip*apply*prepare-value
+  (state <s> ^name list*zip
+             ^operator <o>)
+  (<o> ^name list*zip*prepare-value
+       ^first <first>
+       ^second <second>)
+-->
+  (<s> ^value <value>)
+  (<value> ^first <first>
+           ^second <second>)
+}
+
+############################################################################
+
 sp {list*zip*propose*continue-both
   (state <s> ^name list*zip 
-             ^cfirst  <first>
-             ^csecond <second>
+             ^value <value>
+             ^cfirst.next  <first-next>
+             ^csecond.next <second-next>
              ^builder <builder>)
   (<builder> ^end)
-  (<first> ^value <first-value>
-           ^next <first-next>)
-  (<first> ^value <first-value>
-           ^next <first-next>)
-  (<second> ^value <second-value>
-           ^next <second-next>)
 -->
   (<s> ^operator <o>)
   (<o> ^name list*builder*add
@@ -71,19 +126,15 @@ sp {list*zip*propose*continue-both
        ^value <value>
        ^first-next <first-next>
        ^second-next <second-next>)
-  (<value> ^first <first-value>
-           ^second <second-value>)
 }
 
 sp {list*zip*propose*continue-first-done
   (state <s> ^name list*zip 
+             ^value <value>
              ^cfirst nil
-             ^csecond <second>
-             ^builder <builder>
-             ^default <default>)
+             ^csecond.next <second-next>
+             ^builder <builder>)
   (<builder> ^end)
-  (<second> ^value <second-value>
-           ^next <second-next>)
 -->
   (<s> ^operator <o>)
   (<o> ^name list*builder*add
@@ -91,19 +142,16 @@ sp {list*zip*propose*continue-first-done
        ^value <value>
        ^first-next nil
        ^second-next <second-next>)
-  (<value> ^first <default>
-           ^second <second-value>)
 }
 
 sp {list*zip*propose*continue-second-done
   (state <s> ^name list*zip 
-             ^cfirst <first>
+             ^value <value>
+             ^cfirst.next <first-next>
              ^csecond nil
              ^builder <builder>
              ^default <default>)
   (<builder> ^end)
-  (<first> ^value <first-value>
-           ^next <first-next>)
 -->
   (<s> ^operator <o>)
   (<o> ^name list*builder*add
@@ -111,20 +159,20 @@ sp {list*zip*propose*continue-second-done
        ^value <value>
        ^first-next <first-next>
        ^second-next nil)
-  (<value> ^first <first-value>
-           ^second <default>)
 }
 
 sp {list*zip*apply*continue-advance
   (state <s> ^name list*zip
-             ^operator.name list*builder*add
+             ^value <value>
+             ^operator <o>
              ^cfirst <cfirst>
              ^csecond <csecond>)
   (<o> ^name list*builder*add
        ^first-next <fn>
        ^second-next <sn>)
 -->
-  (<s> ^cfirst <cfirst> - <fn>
+  (<s> ^value <value> -
+       ^cfirst <cfirst> - <fn>
        ^csecond <csecond> - <sn>)
 }
 
