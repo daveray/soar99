@@ -37,8 +37,7 @@ sp {list*map*propose*init
 }
 
 sp {list*map*apply*init
-  (state <s> ^name list*map
-             ^operator.name list*map-init
+  (state <s> ^operator.name list*map-init
              ^head <head>)
 -->
   (<s> ^current <head>
@@ -81,8 +80,7 @@ sp {list*map*propose*process-func-result
 sp {list*map*apply*process-func-result*advance
   "Advance the current pointer and index while processing 
    most recent function result"
-  (state <s> ^name list*map
-             ^operator.name list*builder*add
+  (state <s> ^operator.name list*builder*add
              ^result <result>
              ^current <current>
              ^index <index>)
@@ -103,8 +101,7 @@ sp {list*map*propose*return
 
 sp {list*map*apply*process-return
   "Return the resulting list"
-  (state <s> ^name list*map
-             ^operator.name list*map-return
+  (state <s> ^operator.name list*map-return
              ^superstate <ss>
              ^builder.head <result-head>
              ^return-to <return-to>)
