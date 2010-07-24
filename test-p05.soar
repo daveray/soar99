@@ -1,0 +1,33 @@
+# Reverse a list
+setup {
+  source "common.soar"
+}
+
+test "P05: Reverse a list" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p05 
+        ^input (list this is a list))
+  }
+
+  sp {succeeded
+    (state <s> ^name p05 ^result <r>)
+    (<r>  ^value list ^next <n1>)
+    (<n1> ^value a    ^next <n2>)
+    (<n2> ^value is   ^next <n3>)
+    (<n3> ^value this ^next nil)
+  -->
+    (pass)
+  }
+
+  sp {propose*list*reverse
+    (state <s> ^name p05
+              ^input <input>
+              -^result)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*reverse 
+        ^head <input>)
+  }
+}

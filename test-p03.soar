@@ -1,0 +1,37 @@
+# Find the kth element of a list
+setup {
+  source "common.soar"
+}
+
+test "P03: Find the kth element of a list" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p03 
+        ^input <input>
+        ^expected-result of)
+    (<input> ^head (list this is a list of many values) 
+            ^index 4)
+  }
+
+  sp {pass
+    (state <s> ^name p03 
+              ^expected-result <expected>
+              ^result <expected>)
+  -->
+    (pass)
+  }
+
+  sp {propose*list*get
+    (state <s> ^name p03
+              ^input <input>
+              -^result)
+    (<input> ^head <head>
+            ^index <index>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*get 
+        ^head <head>
+        ^index <index>)
+  }
+}

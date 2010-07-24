@@ -1,0 +1,83 @@
+# check if a list is a palindrome
+setup {
+  source "common.soar"
+
+  sp {succeeded
+    (state <s> ^name p06
+              ^expected-result <expected>
+              ^result <expected>)
+  -->
+    (pass)
+  }
+
+  sp {palindrome?*elaborate*params
+    (state <s> ^superstate.operator <o>)
+    (<o> ^name palindrome?
+        ^head <head>)
+  -->
+    (<s> ^name palindrome?
+        ^head <head>)
+  }
+
+  sp {propose*palindrome?
+    (state <s> ^name p06
+              ^input <input>
+              -^result) 
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name palindrome? 
+        ^head <input>)
+  }
+
+  sp {palindrome?*propose*reverse
+    (state <s> ^name palindrome?
+              -^reversed
+              ^head <head>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*reverse
+        ^return-to reversed
+        ^head <head>)
+  }
+
+  sp {palindrome?*propose*compare
+    (state <s> ^name palindrome?
+              ^reversed <reversed>
+              ^head <head>
+              -^result)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*compare
+        ^a <head>
+        ^b <reversed>)
+  }
+
+  sp {palindrome?*propose*return
+    (state <s> ^name palindrome?
+              ^superstate <ss>
+              ^result <result>)
+  -->
+    (<ss> ^result <result>)
+  }
+}
+
+test "P06: Check if a list is a palindrome" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p06
+        ^input (list this is a palindrome a is this)
+        ^expected-result true)
+  }
+}
+
+test "P06: Check if a list is not a palindrome" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p06
+        ^input (list this is not a palindrome a is this)
+        ^expected-result false)
+  }
+}
+

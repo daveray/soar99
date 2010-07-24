@@ -1,0 +1,32 @@
+# Find the number of elements in a list
+setup {
+  source "common.soar"
+}
+
+test "P04: Find the number of elements in a list" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p04 
+        ^input (list this is big a list of eight values)
+        ^expected-result 8)
+  }
+
+  sp {pass
+    (state <s> ^name p04 
+              ^expected-result <expected>
+              ^result <expected>)
+  -->
+    (pass)
+  }
+
+  sp {propose*list*size
+    (state <s> ^name p04
+              ^input <input>
+              -^result)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*size
+        ^head <input>)
+  }
+}

@@ -1,0 +1,10 @@
+# Take a slice of a list
+
+# See test/test-list-slice-*
+test "P18: Take a slice of a list" {
+  sp {pass
+    (state <s> ^superstate nil)
+  -->
+    (pass |See test-list-slice for implementation of problem 18|)
+  }
+}

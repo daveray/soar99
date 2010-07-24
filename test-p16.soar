@@ -1,0 +1,64 @@
+# drop every Nth element from the list
+setup {
+  source "common.soar"
+}
+
+test "P16: Drop every Nth element from a list" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p16
+        ^head (list a b c d e f g h i k)
+            ^N 3)
+  }
+
+  sp {succeeded
+    (state <s> ^name p16
+              ^result <result>)
+    (<result> ^value a ^next <n0>)
+    (<n0> ^value b ^next  <n1>)
+    (<n1> ^value d ^next  <n2>)
+    (<n2> ^value e ^next  <n3>)
+    (<n3> ^value g ^next  <n4>)
+    (<n4> ^value h ^next  <n5>)
+    (<n5> ^value k ^next  nil)
+  -->
+    (pass)
+  }
+
+  sp {p16*elaborate*nth*modulus
+    (state <s> ^operator <o>)
+    (state <ss> ^superstate nil ^N <n>)
+    (<o> ^name p16*nth
+        ^index <index>)
+  -->
+    (<o> ^modulus (mod (+ <index> 1) <n>))
+  }
+
+  sp {p16*apply*omit
+    (state <s> ^operator <o>)
+    (<o> ^name p16*nth
+        ^modulus 0)
+  -->
+    (<s> ^result false)
+  }
+  sp {p16*apply*include
+    (state <s> ^operator <o>)
+    (<o> ^name p16*nth
+        ^modulus <> 0)
+  -->
+    (<s> ^result true)
+  }
+
+  sp {p16*propose*filter
+    (state <s> ^name p16
+              -^result
+              ^head <head>
+              ^N <n>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*filter
+        ^head <head>
+        ^func p16*nth)
+  }
+}

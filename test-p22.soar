@@ -1,0 +1,9 @@
+
+# See test/test-list-range.soar and friends
+test "P22: Take a range from a list" {
+  sp {pass
+    (state <s> ^superstate nil)
+  -->
+    (pass |See test-list-range for implementation of problem 22|)
+  }
+}

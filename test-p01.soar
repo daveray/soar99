@@ -1,0 +1,35 @@
+# Find the last element of a list
+setup {
+  source "common.soar"
+}
+
+test "P01: Find the last element of a list" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p01 
+        ^input (list this is a list of many values)
+        ^expected-result values)
+  }
+
+  sp {pass
+    (state <s> ^name p01 
+              ^expected-result <expected>
+              ^test-result <expected>)
+  -->
+    (pass)
+  }
+
+  sp {propose*list*last
+    (state <s> ^name p01
+              ^input <input>
+              -^test-result)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*last 
+        ^head <input>
+        ^return-to test-result)
+  }
+}
+
+          

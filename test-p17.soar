@@ -1,0 +1,60 @@
+# Split a list into two parts given an index N
+setup {
+  source "common.soar"
+}
+
+test "P17: Split a list into two parts given an index N" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p17
+        ^head (list 1 2 3 4 5 6 7 8 9)
+            ^N 3)
+  }
+
+  sp {succeeded
+    (state <s> ^name p17
+              ^first <first>
+              ^second <second>)
+
+    (<first> ^value 1 ^next  <n6>)
+    (<n6> ^value 2 ^next  <n7>)
+    (<n7> ^value 3 ^next  nil)
+
+    (<second> ^value 4 ^next <n0>)
+    (<n0> ^value 5 ^next  <n1>)
+    (<n1> ^value 6 ^next  <n2>)
+    (<n2> ^value 7 ^next  <n3>)
+    (<n3> ^value 8 ^next  <n4>)
+    (<n4> ^value 9 ^next  nil)
+  -->
+    (pass)
+  }
+
+  sp {p17*propose*slice*first
+    (state <s> ^name p17
+              -^first
+              ^head <head>
+              ^N <n>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*slice
+        ^head <head>
+        ^end <n>
+        ^return-to first)
+  }
+
+  sp {p17*propose*slice*second
+    (state <s> ^name p17
+              ^first
+              -^second 
+              ^head <head>
+              ^N <n>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name list*slice
+        ^head <head>
+        ^start <n>
+        ^return-to second)
+  }
+}
