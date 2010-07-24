@@ -1,6 +1,6 @@
 setup {
 
-  source "../common.soar"
+  source "common.soar"
 
   sp {propose*list*compare
     (state <s> ^name test-list-compare

@@ -1,5 +1,5 @@
 setup {
-  source ../common.soar
+  source common.soar
 
   sp {apply*less-than-10-true
     "Return true if less than 10"

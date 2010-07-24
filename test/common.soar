@@ -1,0 +1,9 @@
+source "../list/list.soar"
+
+sp {propose*init
+  (state <s> ^superstate nil
+            -^name)
+-->
+  (<s> ^operator.name init)
+}
+

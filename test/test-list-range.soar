@@ -1,5 +1,5 @@
 setup {
-  source "../common.soar"
+  source "common.soar"
 }
 
 test list-range-with-no-start-argument {

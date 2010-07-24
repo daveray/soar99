@@ -1,5 +1,5 @@
 setup {
-  source ../common.soar
+  source common.soar
 
   sp {apply*double
     "Multiply a value by 2"

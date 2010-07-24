@@ -1,5 +1,5 @@
 setup {
-  source "../common.soar"
+  source "common.soar"
 
   sp {test-list-slice*propose*slice
     (state <s> ^name test-list-slice
