@@ -8,7 +8,7 @@ setup {
               ^N <n>)
   -->
     (<s> ^operator <o>)
-    (<o> ^name list*slice
+    (<o> ^name bebot*list*slice
         ^head <head>
         ^end <n>
         ^return-to first)
@@ -22,7 +22,7 @@ setup {
               ^N <n>)
   -->
     (<s> ^operator <o>)
-    (<o> ^name list*slice
+    (<o> ^name bebot*list*slice
         ^head <head>
         ^start <n>
         ^return-to second)
@@ -35,7 +35,7 @@ setup {
               -^result)
   -->
     (<s> ^operator <o>)
-    (<o> ^name list*append
+    (<o> ^name bebot*list*append
         ^first <second>
         ^second <first>
         ^return-to result)

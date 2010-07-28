@@ -1,5 +1,6 @@
 
-source "list/list.soar"
+source "../bebot/bebot.soar"
+#source http://github.com/daveray/bebot/raw/master/bebot.soar
 
 sp {propose*init
   (state <s> ^superstate nil

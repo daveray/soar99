@@ -38,7 +38,7 @@ test "P17: Split a list into two parts given an index N" {
               ^N <n>)
   -->
     (<s> ^operator <o>)
-    (<o> ^name list*slice
+    (<o> ^name bebot*list*slice
         ^head <head>
         ^end <n>
         ^return-to first)
@@ -52,7 +52,7 @@ test "P17: Split a list into two parts given an index N" {
               ^N <n>)
   -->
     (<s> ^operator <o>)
-    (<o> ^name list*slice
+    (<o> ^name bebot*list*slice
         ^head <head>
         ^start <n>
         ^return-to second)

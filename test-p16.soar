@@ -57,7 +57,7 @@ test "P16: Drop every Nth element from a list" {
               ^N <n>)
   -->
     (<s> ^operator <o>)
-    (<o> ^name list*filter
+    (<o> ^name bebot*list*filter
         ^head <head>
         ^func p16*nth)
   }

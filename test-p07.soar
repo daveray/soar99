@@ -1,0 +1,8 @@
+test "P07: Recursively flatten a list" {
+  sp {pass
+    (state <s> ^superstate nil)
+  -->
+    (pass |See bebot*list*flatten for implementation of problem 7|)
+  }
+}
+

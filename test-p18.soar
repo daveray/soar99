@@ -5,6 +5,6 @@ test "P18: Take a slice of a list" {
   sp {pass
     (state <s> ^superstate nil)
   -->
-    (pass |See test-list-slice for implementation of problem 18|)
+    (pass |See bebot*list*slice for implementation of problem 18|)
   }
 }

@@ -35,7 +35,7 @@ setup {
               ^head <head>)
   -->
     (<s> ^operator <o>)
-    (<o> ^name list*reverse
+    (<o> ^name bebot*list*reverse
         ^return-to reversed
         ^head <head>)
   }
@@ -47,7 +47,7 @@ setup {
               -^result)
   -->
     (<s> ^operator <o>)
-    (<o> ^name list*compare
+    (<o> ^name bebot*list*compare
         ^a <head>
         ^b <reversed>)
   }
