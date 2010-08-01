@@ -7,69 +7,157 @@ setup {
     (<s> ^name p10)
   }
 
-  sp {apply*init*setup
+  sp {propose*return-nil
+    "Special case for empty list"
+    (state <s> ^name p10
+               ^input nil)
+  -->
+    (<s> ^operator.name p10-return-nil)
+  }
+
+  sp {apply*return-nil
+    (state <s> ^operator.name p10-return-nil)
+  -->
+    (<s> ^result.head nil)
+  }
+
+  sp {propose*zip
+    "First we zip the list with a shifted version of itself. Then we can just
+     iterate over the pairs. Anywhere where the pairs differ, we have to encode."
+    (state <s> ^name p10
+               ^input <first>
+              -^zipped)
+    (<first> ^next <second>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name bebot*list*zip
+         ^first <first>
+         ^second <second>
+         ^return-to zipped)
+  }
+
+  sp {p10-func*elaborate*info
+    "Add info about this operator to the lib*library structure on the
+    top state."
+    (state <s> ^superstate nil
+              ^bebot*library.operators <ops>)
+  -->
+    (<ops> ^p10-func <args>)
+    (<args> ^default <def>
+            ^required <req>)
+    (<def> ^return-to result)
+    (<req> ^value nil
+           ^previous nil)
+  }
+  sp {p10*propose*fold-left
+    (state <s> ^name p10
+               ^zipped <zipped>
+              -^result <result>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name bebot*list*fold-left
+         ^func p10-func
+         ^head <zipped>
+         ^initial-value <builder>)
+    (<builder> ^head nil ^end nil ^count 0)
+  }
+
+  sp {apply*p10-func*duplicate*value
+    "If the pair in the zipped list are the same, increment the counter
+     and move along"
+    (state <s> ^operator <o>)
+    (<o> ^name p10-func
+         ^value <value>
+         ^previous <builder>)
+    (<value> ^first <same>
+             ^second <same>)
+    (<builder> ^head <head>
+               ^end <end>
+               ^count <count>)
+  -->
+    (<s> ^result <new-builder>)
+    (<new-builder> ^head <head> 
+                   ^end <end>
+                   ^count (+ <count> 1))
+  }
+
+  sp {p10-func*propose*encode
+    "We're in a sub-state which means we hit a pair in the zip list that
+     are unequal. Propose encoding the count/value. Have to do this with
+     with an operator for o-support..."
+    (state <s> ^name p10-func
+              -^encoded)
+  -->
+    (<s> ^operator.name p10-func*encode)
+  }
+
+  sp {p10-func*apply*encode
+    (state <s> ^operator.name p10-func*encode
+               ^value.first <value>
+               ^previous.count <count>)
+  -->
+    (<s> ^encoded <encoding>)
+    (<encoding> ^value <value>
+                ^count (+ <count> 1))
+  }
+
+  sp {p10-func*propose*add
+    "Now that the count/value is encoded, use the builder to add it to the end
+     of the result list"
+    (state <s> ^name p10-func
+               ^previous <builder>
+               ^encoded <encoding>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name bebot*list*builder*add
+         ^this <builder>
+         ^value <encoding>)
+  }
+
+  sp {p10-func*apply*add-return
+    "HACK: At the same time that the list is extended, reset the counter and return
+     the result back up to fold-left"
+    (state <s> ^operator <o>
+               ^superstate <ss>)
+    (<o> ^name bebot*list*builder*add
+         ^this <builder>)
+    (<builder> ^count <count>)
+  -->
+    (<builder> ^count <count> -
+               ^count 0)
+    (<ss> ^result <builder>)
+  }
+
+}
+
+test "can run-length encode an empty list" {
+  sp {apply*init
     (state <s> ^operator.name init)
   -->
-    (<s> ^bins <bins>
-         ^step 0)
+    (<s> ^input nil)
   }
 
-
-  sp {propose-create-step-bin
+  sp {pass
     (state <s> ^name p10
-               ^bins <bins>
-               ^step <step>)
-    (<bins> -^<step>)
+               ^result.head nil)
   -->
-    (<s> ^operator.name create-step-bin)
+    (pass)
+  }
+}
+
+test "can run-length encode a list with a single value" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^input (list a a a a a a a))
   }
 
-  sp {apply-create-step-bin
-    (state <s> ^operator.name create-step-bin
-               ^bins <bins>
-               ^step <step>)
-  -->
-    (<bins> ^<step> <new-bin>)
-    (<new-bin> ^count 0)
-    (write (crlf) |created new bin for step | <step>)
-  }
-
-  sp {propose*select-next-element
+  sp {pass
     (state <s> ^name p10
-               ^input <input>
-               ^bins.<step> <bin>
-               ^step <step>)
-    (<input> ^<index> <value>)
-   -(<bin> ^<index> <value>)
+               ^result.head <r0>)
+    (<r0> ^next nil ^value (^value a ^count 7))
   -->
-    (<s> ^operator <o> +)
-    (<o> ^name select-next-element
-         ^index <index>
-         ^value <value>)
-  }
-
-  sp {apply*select-next-element*normal
-    (state <s> ^operator <o>
-               ^step <step>
-               ^bins.<step> <bin>)
-    (<o> ^name select-next-element
-         ^index <index>
-         ^value <value>)
-    (<bin> ^count <current-count>)
-  -->
-    (<bin> ^<index> <value>
-           ^count <current-count> -
-           ^count (+ <current-count> 1))
-    (write (crlf) |Added [| <index> |] | <value> | in step | <step>)
-  }
-
-  sp {elaborate*select-next-element*prefs
-    (state <s> ^operator <o1> +
-               ^operator <o2> +)
-    (<o1> ^index <index1>)
-    (<o2> ^index > <index1>)
-  -->
-    (<s> ^operator <o1> > <o2>)
+    (pass)
   }
 }
 
@@ -77,20 +165,19 @@ test "can run-length encode a list" {
   sp {apply*init
     (state <s> ^operator.name init)
   -->
-    (<s> ^input <i>)
-    (<i> ^0 a
-         ^1 a
-         ^2 a
-         ^3 a
-         ^4 b
-         ^5 c
-         ^6 c
-         ^7 a
-         ^8 a
-         ^9 d
-         ^10 e
-         ^11 e
-         ^12 e
-         ^13 e)
+    (<s> ^input (list a a a a b c c a a d e e e e))
+  }
+
+  sp {pass
+    (state <s> ^name p10
+               ^result.head <r0>)
+    (<r0> ^next <r1> ^value (^value a ^count 4))
+    (<r1> ^next <r2> ^value (^value b ^count 1))
+    (<r2> ^next <r3> ^value (^value c ^count 2))
+    (<r3> ^next <r4> ^value (^value a ^count 2))
+    (<r4> ^next <r5> ^value (^value d ^count 1))
+    (<r5> ^next nil  ^value (^value e ^count 4))
+  -->
+    (pass)
   }
 }
