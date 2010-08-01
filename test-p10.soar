@@ -1,0 +1,96 @@
+setup {
+  source common.soar
+
+  sp {apply*init*add-state-name
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name p10)
+  }
+
+  sp {apply*init*setup
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^bins <bins>
+         ^step 0)
+  }
+
+
+  sp {propose-create-step-bin
+    (state <s> ^name p10
+               ^bins <bins>
+               ^step <step>)
+    (<bins> -^<step>)
+  -->
+    (<s> ^operator.name create-step-bin)
+  }
+
+  sp {apply-create-step-bin
+    (state <s> ^operator.name create-step-bin
+               ^bins <bins>
+               ^step <step>)
+  -->
+    (<bins> ^<step> <new-bin>)
+    (<new-bin> ^count 0)
+    (write (crlf) |created new bin for step | <step>)
+  }
+
+  sp {propose*select-next-element
+    (state <s> ^name p10
+               ^input <input>
+               ^bins.<step> <bin>
+               ^step <step>)
+    (<input> ^<index> <value>)
+   -(<bin> ^<index> <value>)
+  -->
+    (<s> ^operator <o> +)
+    (<o> ^name select-next-element
+         ^index <index>
+         ^value <value>)
+  }
+
+  sp {apply*select-next-element*normal
+    (state <s> ^operator <o>
+               ^step <step>
+               ^bins.<step> <bin>)
+    (<o> ^name select-next-element
+         ^index <index>
+         ^value <value>)
+    (<bin> ^count <current-count>)
+  -->
+    (<bin> ^<index> <value>
+           ^count <current-count> -
+           ^count (+ <current-count> 1))
+    (write (crlf) |Added [| <index> |] | <value> | in step | <step>)
+  }
+
+  sp {elaborate*select-next-element*prefs
+    (state <s> ^operator <o1> +
+               ^operator <o2> +)
+    (<o1> ^index <index1>)
+    (<o2> ^index > <index1>)
+  -->
+    (<s> ^operator <o1> > <o2>)
+  }
+}
+
+test "can run-length encode a list" {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^input <i>)
+    (<i> ^0 a
+         ^1 a
+         ^2 a
+         ^3 a
+         ^4 b
+         ^5 c
+         ^6 c
+         ^7 a
+         ^8 a
+         ^9 d
+         ^10 e
+         ^11 e
+         ^12 e
+         ^13 e)
+  }
+}

@@ -1,0 +1,140 @@
+# Eliminate consecutive duplicates
+#
+# use fold-left and a list-builder to accumulate the result list
+
+setup {
+  source common.soar
+
+  sp {apply*init*add-state-name
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^name test-p08)
+  }
+
+  sp {propose
+    (state <s> ^name test-p08
+              -^result
+               ^input <input>)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name bebot*list*fold-left
+         ^func p08-func
+         ^head <input>
+         ^initial-value <builder>)
+    (<builder> ^head nil ^end nil)
+  }
+
+  sp {p08-func*elaborate*info
+    "Add info about this operator to the lib*library structure on the
+    top state."
+    (state <s> ^superstate nil
+              ^bebot*library.operators <ops>)
+  -->
+    (<ops> ^p08-func <args>)
+    (<args> ^default <def>
+            ^required <req>)
+    (<def> ^return-to result)
+    (<req> ^value nil
+            ^previous nil)
+  }
+
+  sp {apply*p08-func*duplicate*value
+    "If the previous value (end of builder list) is the same as the current
+     value, just return the builder unchanged."
+    (state <s> ^operator <o>
+              -^result)
+    (<o> ^name p08-func
+         ^value <value>
+         ^previous <builder>)
+    (<builder> ^head <head>
+               ^end <end>)
+    (<end> ^value <value>)
+  -->
+    (<s> ^result <builder>)
+    (write (crlf) |Skipping duplicate value | <value>)
+  }
+  
+  sp {p08-func*propose*copy-builder
+    "First, make a copy of the builder to modify and return. Modifying the 
+     builder will invalidate the GDS causing an infinite loop."
+    (state <s> ^name p08-func
+               ^previous <builder>
+              -^new-builder)
+  -->
+    (<s> ^operator.name p08-func*copy-builder)
+  }
+
+  sp {p08-func*apply*copy-builder
+    "Copy the builder"
+    (state <s> ^operator.name p08-func*copy-builder
+               ^previous <builder>)
+    (<builder> ^head <head>
+               ^end <end>)
+  -->
+    (<s> ^new-builder <nb>)
+    (<nb> ^head <head>
+          ^end <end>)
+  }
+
+  sp {p08-func*propose*add
+    "Propose adding the current value to the end of the builder"
+    (state <s> ^name p08-func
+               ^new-builder <builder>
+               ^value <value>
+              -^added)
+    (<builder> ^end)
+  -->
+    (<s> ^operator <o>)
+    (<o> ^name bebot*list*builder*add
+         ^this <builder>
+         ^value <value>)
+    (write (crlf) |Found new value | <value>)
+  }
+
+  sp {p08-func*apply*add
+    "Note that the add has completed. Builder by itself doesn't give any
+     indication other than modifying ^end"
+    (state <s> ^name p08-func
+               ^operator.name bebot*list*builder*add)
+  -->
+    (<s> ^added true)
+  }
+
+  sp {p08-func*propose*return
+    "Now that the value is added to the end, how about returning the builder"
+    (state <s> ^name p08-func
+               ^added)
+  -->
+    (<s> ^operator.name p08-func*return)
+  }
+
+  sp {p08-func*apply*return
+    "Return the new builder as the result of the call from fold-left"
+    (state <s> ^superstate <ss>
+               ^operator.name p08-func*return
+               ^new-builder <builder>)
+  -->
+    (<ss> ^result <builder>)
+  }
+}
+
+test "can remove consecutive duplicates"  {
+  sp {apply*init
+    (state <s> ^operator.name init)
+  -->
+    (<s> ^input (list a a b b b c d d d e))
+  }
+
+  sp {pass
+    (state <s> ^name test-p08
+               ^result.head <r0>)
+    (<r0> ^value a ^next <r1>)
+    (<r1> ^value b ^next <r2>)
+    (<r2> ^value c ^next <r3>)
+    (<r3> ^value d ^next <r4>)
+    (<r4> ^value e ^next nil)
+  -->
+    (pass)
+  }
+}
+

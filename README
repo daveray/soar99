@@ -1,2 +1,6 @@
 Soar implementation of 99 Programming Problems
 https://prof.ti.bfh.ch/hew1/informatik3/prolog/p-99/
+
+Many of the (few) solutions rely on Bebot which is at http://github.com/daveray/bebot.
+Bebot is the reusable, general bits extracted while solving these problems.
+
